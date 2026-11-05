@@ -20,7 +20,12 @@ public sealed class WorkflowTests : IAsyncLifetime
     private const string Row = "08690000000012,Slim Denim 501,B2027-01,98,2,Denizli,12.4";
     private static string Sample => File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "samples", "urunler_duzeltilmis_test.csv"));
 
-    public Task InitializeAsync() { client = factory.CreateClient(); return Task.CompletedTask; }
+    public Task InitializeAsync()
+    {
+        client = factory.CreateClient();
+        client.DefaultRequestHeaders.AcceptLanguage.ParseAdd("en");
+        return Task.CompletedTask;
+    }
     public async Task DisposeAsync() { client.Dispose(); await factory.DisposeAsync(); }
 
     [Fact]

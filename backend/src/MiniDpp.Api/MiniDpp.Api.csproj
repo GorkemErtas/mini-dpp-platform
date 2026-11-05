@@ -1,5 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
   <ItemGroup>
+    <EmbeddedResource Include="../../../localization/server-messages.json" LogicalName="MiniDpp.Api.ServerMessages.json" />
     <ProjectReference Include="../MiniDpp.Infrastructure/MiniDpp.Infrastructure.csproj" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.14">
       <PrivateAssets>all</PrivateAssets>

@@ -1,11 +1,31 @@
 using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using MiniDpp.Api;
 using MiniDpp.Application;
 using MiniDpp.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddProblemDetails();
+builder.Services.AddProblemDetails(options => options.CustomizeProblemDetails = context =>
+{
+    if (context.ProblemDetails.Title is { } title) context.ProblemDetails.Title = Text.Localize(title);
+    if (context.ProblemDetails.Detail is { } detail) context.ProblemDetails.Detail = Text.Localize(detail);
+});
+builder.Services.Configure<RequestLocalizationOptions>(options =>
+{
+    options.SetDefaultCulture("tr").AddSupportedCultures("tr", "en").AddSupportedUICultures("tr", "en");
+    options.ApplyCurrentCultureToResponseHeaders = true;
+    options.RequestCultureProviders =
+    [
+        new CustomRequestCultureProvider(context =>
+        {
+            var language = context.Request.Query["lang"].ToString();
+            return Task.FromResult<ProviderCultureResult?>(context.Request.Path.StartsWithSegments("/dpp") && language is "tr" or "en"
+                ? new ProviderCultureResult(language) : null);
+        }),
+        new AcceptLanguageHeaderRequestCultureProvider()
+    ];
+});
 builder.Services.AddExceptionHandler<SafeExceptionHandler>();
 builder.Services.Configure<FormOptions>(options => options.MultipartBodyLengthLimit = UploadEndpoint.MaxFileBytes + 65536);
 builder.WebHost.ConfigureKestrel(options => options.Limits.MaxRequestBodySize = UploadEndpoint.MaxFileBytes + 65536);
@@ -26,7 +46,10 @@ builder.Services.AddSwaggerGen(options => options.SwaggerDoc("v1", new()
 }));
 
 var app = builder.Build();
+app.UseRequestLocalization();
 app.UseExceptionHandler();
+app.UseStatusCodePages(async context =>
+    await Results.Problem(statusCode: context.HttpContext.Response.StatusCode).ExecuteAsync(context.HttpContext));
 app.Use(async (context, next) =>
 {
     context.Response.Headers.CacheControl = "no-store";

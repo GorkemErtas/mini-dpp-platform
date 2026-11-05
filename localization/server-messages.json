@@ -1,0 +1,138 @@
+{
+  "gtin": {
+    "en": "GTIN must contain exactly 14 ASCII digits with a valid GS1 check digit.",
+    "tr": "GTIN, geçerli bir GS1 kontrol basamağı içeren tam 14 ASCII rakamından oluşmalıdır."
+  },
+  "required": {
+    "en": "This field is required.",
+    "tr": "Bu alan zorunludur."
+  },
+  "textLength": {
+    "en": "Use at most 200 characters.",
+    "tr": "En fazla 200 karakter kullanın."
+  },
+  "decimal": {
+    "en": "Enter a decimal number using a dot, without grouping separators.",
+    "tr": "Binlik ayırıcı kullanmadan, ondalık ayırıcı olarak nokta içeren bir sayı girin."
+  },
+  "cottonRange": {
+    "en": "Cotton must be between 0 and 100.",
+    "tr": "Pamuk yüzdesi 0 ile 100 arasında olmalıdır."
+  },
+  "elastaneRange": {
+    "en": "Elastane must be between 0 and 100.",
+    "tr": "Elastan yüzdesi 0 ile 100 arasında olmalıdır."
+  },
+  "composition": {
+    "en": "Cotton and elastane percentages must sum to 100.",
+    "tr": "Pamuk ve elastan yüzdelerinin toplamı 100 olmalıdır."
+  },
+  "carbon": {
+    "en": "Carbon footprint must be nonnegative.",
+    "tr": "Karbon ayak izi negatif olamaz."
+  },
+  "malformed": {
+    "en": "Malformed CSV record or incorrect number of columns.",
+    "tr": "CSV kaydı hatalı biçimlendirilmiş veya sütun sayısı yanlış."
+  },
+  "conflict": {
+    "en": "The model/batch identity conflicts with another GTIN, or the record changed concurrently. Retry with corrected data.",
+    "tr": "Model/parti kimliği başka bir GTIN ile çakışıyor veya kayıt eş zamanlı olarak değiştirildi. Verileri düzeltip yeniden deneyin."
+  },
+  "emptyCsv": {
+    "en": "The CSV is empty. Include the required header row.",
+    "tr": "CSV boş. Zorunlu başlık satırını ekleyin."
+  },
+  "headers": {
+    "en": "CSV headers must be well-formed and unique.",
+    "tr": "CSV başlıkları doğru biçimlendirilmiş ve benzersiz olmalıdır."
+  },
+  "missingColumns": {
+    "en": "Missing required columns: ",
+    "tr": "Eksik zorunlu sütunlar: "
+  },
+  "rowLimit": {
+    "en": "A CSV may contain at most 10,000 data rows.",
+    "tr": "Bir CSV en fazla 10.000 veri satırı içerebilir."
+  },
+  "encoding": {
+    "en": "The file could not be read as a well-formed UTF-8 CSV. Check quoting, encoding and field lengths.",
+    "tr": "Dosya, geçerli bir UTF-8 CSV olarak okunamadı. Tırnak işaretlerini, kodlamayı ve alan uzunluklarını kontrol edin."
+  },
+  "uploadForm": {
+    "en": "Upload a CSV as multipart/form-data using the file field.",
+    "tr": "CSV dosyasını file alanını kullanarak multipart/form-data biçiminde yükleyin."
+  },
+  "chooseFile": {
+    "en": "Choose a nonempty CSV file using the file field.",
+    "tr": "file alanını kullanarak boş olmayan bir CSV dosyası seçin."
+  },
+  "fileLimit": {
+    "en": "The CSV file exceeds the 2 MiB limit.",
+    "tr": "CSV dosyası 2 MiB sınırını aşıyor."
+  },
+  "extension": {
+    "en": "Only .csv files are accepted.",
+    "tr": "Yalnızca .csv dosyaları kabul edilir."
+  },
+  "invalidCsv": {
+    "en": "Invalid CSV",
+    "tr": "Geçersiz CSV"
+  },
+  "invalidMultipart": {
+    "en": "Invalid multipart upload",
+    "tr": "Geçersiz multipart yüklemesi"
+  },
+  "multipartDetail": {
+    "en": "Check the multipart boundary and the 2 MiB file limit.",
+    "tr": "Multipart sınırını ve 2 MiB dosya boyutu sınırını kontrol edin."
+  },
+  "requestLimit": {
+    "en": "The upload exceeds the request size limit.",
+    "tr": "Yükleme, istek boyutu sınırını aşıyor."
+  },
+  "requestFailed": {
+    "en": "The request could not be completed.",
+    "tr": "İstek tamamlanamadı."
+  },
+  "retry": {
+    "en": "Retry the request. Completed CSV rows may already be saved; repeating the import is safe.",
+    "tr": "İsteği yeniden deneyin. Tamamlanan CSV satırları kaydedilmiş olabilir; içe aktarmayı tekrarlamak güvenlidir."
+  },
+  "productNotFound": {
+    "en": "Product not found",
+    "tr": "Ürün bulunamadı"
+  },
+  "versionNotFound": {
+    "en": "Product version not found",
+    "tr": "Ürün sürümü bulunamadı"
+  },
+  "badRequest": {
+    "en": "Bad Request",
+    "tr": "Geçersiz istek"
+  },
+  "notFound": {
+    "en": "Not Found",
+    "tr": "Bulunamadı"
+  },
+  "methodNotAllowed": {
+    "en": "Method Not Allowed",
+    "tr": "Yönteme izin verilmiyor"
+  },
+  "unsupportedMedia": {
+    "en": "Unsupported Media Type",
+    "tr": "Desteklenmeyen içerik türü"
+  },
+  "tooLarge": {
+    "en": "Payload Too Large",
+    "tr": "İstek içeriği çok büyük"
+  },
+  "contentTooLarge": {
+    "en": "Content Too Large",
+    "tr": "İçerik çok büyük"
+  },
+  "serverError": {
+    "en": "Internal Server Error",
+    "tr": "Sunucu hatası"
+  }
+}

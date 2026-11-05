@@ -27,7 +27,7 @@ public static class UploadEndpoint
             if (!string.Equals(Path.GetExtension(file.FileName), ".csv", StringComparison.OrdinalIgnoreCase))
                 return Results.Problem(statusCode: 400, title: "Only .csv files are accepted.");
             await using var stream = file.OpenReadStream();
-            return Results.Ok(await importer.ImportAsync(stream, ct));
+            return Results.Ok(Text.Localize(await importer.ImportAsync(stream, ct)));
         }
         catch (InvalidCsvException exception)
         {
