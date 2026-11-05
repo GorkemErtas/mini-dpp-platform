@@ -8,12 +8,23 @@ and immutable version history.
 The [original specification](docs/Mini_DPP_Teknik_Odev_ESG_Next.pdf) and
 [unchanged sample CSV](samples/urunler_duzeltilmis_test.csv) are included.
 See the [acceptance checklist and verification record](docs/REVIEW.md) and
-[incremental commit plan](docs/COMMITS.md).
+[verified incremental commit history](docs/COMMITS.md). The source PDF's public
+distribution is an outstanding owner decision; see [the review](docs/REVIEW.md).
 
 ## Quick start
 
 Prerequisites: **.NET 10 LTS SDK**, **Node.js 24 or later** (24 LTS recommended), npm,
 and Git. No database server, account, secrets or cloud services are needed.
+
+Clone the public repository:
+
+```sh
+git clone https://github.com/GorkemErtas/mini-dpp-platform.git
+cd mini-dpp-platform
+```
+
+.gitattributes keeps source checkouts at LF on Windows as well as Unix and preserves
+the supplied CSV/PDF bytes, including when Git has `core.autocrlf=true`.
 
 From the repository root, start the backend:
 
@@ -276,8 +287,13 @@ WCAG A/AA rules with axe, and validates passport links and response types.
 Playwright starts both servers with an isolated temporary database when ports are
 free. Outside CI it can reuse already running local servers, in which case its sample
 import affects that local demo database. Stop both servers to test a fresh start.
-GitHub Actions runs backend, frontend and browser jobs. Workflow execution itself
-requires a future authorized commit/push; it has not been claimed as run remotely.
+GitHub Actions runs backend, frontend and browser jobs. At the **2026-11-05** review
+start, public `main` pointed to `b5f86b8a022c3f88b189acac3abfd3fa1d8dd966`, and
+[Build and test run #1](https://github.com/GorkemErtas/mini-dpp-platform/actions/runs/41825678774)
+completed successfully on **2026-11-04**, with all three jobs passing. That run
+covers that published commit. The documentation and checkout fixes were checked
+locally. For later commits, check the corresponding run on the
+[Actions page](https://github.com/GorkemErtas/mini-dpp-platform/actions).
 
 ## Repository layout
 
@@ -292,7 +308,7 @@ frontend/
   src/                        # Typed client, views, reusable UI and CSS
   tests/                      # Vitest/Testing Library and Playwright
 samples/                      # Original unmodified CSV
-docs/                         # Original PDF, plan, acceptance and commit guidance
+docs/                         # Original PDF, plan, acceptance and verified history
 scripts/                      # Optional local SDK helper
 .github/workflows/ci.yml
 ```
@@ -314,5 +330,6 @@ scripts/                      # Optional local SDK helper
   the assessment. `npm run build` produces `frontend/dist`; the documented development
   proxy is the complete supported local setup. Docker was deliberately omitted.
 
-No commits or pushes were made during implementation. Use the reviewable logical
-changes in [docs/COMMITS.md](docs/COMMITS.md) to create your own real history after review.
+The reviewed base contains the initial commit and nine incremental implementation,
+test, documentation and CI commits, recorded in [docs/COMMITS.md](docs/COMMITS.md).
+After the review, the owner authorized committing and pushing the review fixes.

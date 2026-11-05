@@ -18,7 +18,9 @@ byte-for-byte into samples; it must never be edited or resaved through Excel.
 - [x] Bonus (in scope): React + TypeScript interface.
 - [x] Bonus (in scope): full immutable product version history.
 - [x] Expanded brief: migrations, DTOs, bounded upload, CORS, consistent errors,
-  automated backend/frontend tests, OpenAPI, CI, no commits or deployment.
+  automated backend/frontend tests, OpenAPI and CI. These are implementation
+  additions, rather than extra mandatory PDF requirements. No cloud deployment
+  is required.
 
 ## B. Schema and update rules
 
@@ -82,6 +84,31 @@ docs/
    Check visibility leaks, consistency, 404s and decoded QR destination.
 4. Implement typed React UI; check upload/errors/role toggle and responsive styling.
 5. Run backend tests/build/format and frontend tests/typecheck/lint/build.
-6. Finish README, CI, requirement mapping and suggested incremental commit commands.
+6. Finish README, CI, requirement mapping and an accurate incremental history record.
 
-No commit, push, publish, authentication or cloud setup is authorized.
+## F. Submission review status (2026-11-05)
+
+All seven mandatory PDF requirements, the React + TypeScript advantage and the
+immutable version-history bonus were rechecked. The database architecture, API
+contracts and application source are preserved.
+
+At review start, public `main` was verified at `b5f86b8a022c3f88b189acac3abfd3fa1d8dd966`.
+The initial commit is followed by nine real incremental commits; see
+[COMMITS.md](COMMITS.md). GitHub Actions
+[run #1](https://github.com/GorkemErtas/mini-dpp-platform/actions/runs/41825678774)
+completed successfully on 2026-11-04; backend, frontend and browser jobs all passed.
+
+A fresh public clone reproduced a Windows checkout defect: `core.autocrlf=true`
+changed the sample CSV hash and caused backend/frontend formatting checks to fail.
+The review adds `.gitattributes` to enforce LF source checkouts and preserve input
+bytes. Recreating the clone's files with those attributes restored the original
+CSV hash and passed both formatting checks. Full results and prioritized findings
+are in [REVIEW.md](REVIEW.md).
+
+The PDF permits including the sample CSV but does not explicitly address public
+redistribution of the assessment PDF. Its public inclusion remains an owner
+decision; this review leaves the PDF and existing Git history unchanged. The review
+initially left its fixes unstaged and uncommitted; the owner subsequently authorized
+committing and pushing them. No history rewrite, PDF removal or deployment is
+included in that authorization. Later commit/run results are available in Git
+history and [GitHub Actions](https://github.com/GorkemErtas/mini-dpp-platform/actions).

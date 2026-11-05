@@ -1,0 +1,6 @@
+# Match .editorconfig on every platform, including core.autocrlf=true checkouts.
+* text=auto eol=lf
+
+# Preserve the supplied assessment inputs byte-for-byte.
+samples/urunler_duzeltilmis_test.csv -text
+*.pdf binary

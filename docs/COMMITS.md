@@ -1,48 +1,60 @@
-# Suggested real incremental commits
+# Verified incremental commit history
 
-No commits or pushes have been made. The working tree contains the complete
-implementation for review. These commands are suggestions to run yourself after
-review/approval. Never backdate commits or create empty commits to simulate progress.
+Verified on **2026-11-05** using local Git history, a fresh clone of the public
+repository and the GitHub branch/run APIs. At review start, public `main` and local
+HEAD both pointed to `b5f86b8a022c3f88b189acac3abfd3fa1d8dd966`.
 
-Some features share files, so use `git add -p` for the stated logical hunks. After each
-commit, run the relevant checks. The detailed dependency/build checks are in README.
-Where a hunk cannot form a meaningful buildable commit, combine adjacent milestones.
+The initial commit and nine subsequent incremental commits are already published.
+This is the observed history, in chronological order:
 
-| Order | Logical change ready | Suggested commit |
-| --- | --- | --- |
-| 1 | Solution/project configuration, ignore/editor files, tool manifest | `chore: initialize mini dpp solution` |
-| 2 | Domain entities, DbContext, initial migration and dependency locks | `feat: model relational persistence with ef core` |
-| 3 | Domain validation, CSV service, import contracts and upload endpoint | `feat: implement validated csv import` |
-| 4 | Product reader, passport routes, HTML, schema.org JSON-LD and QR | `feat: expose html jsonld and qr passports` |
-| 5 | Shared visibility presenter, carbon omission and response cache rules | `feat: implement demo role visibility` |
-| 6 | Revision snapshots, transactional change/no-op semantics, history routes | `feat: add product version history` |
-| 7 | Typed React client, dashboard, import, detail, history and responsive CSS | `feat: build react typescript interface` |
-| 8 | Backend tests, frontend tests, real-browser/accessibility checks | `test: cover import validation and dpp workflows` |
-| 9 | README, source PDF/CSV, acceptance record and optional SDK helper | `docs: complete setup and api documentation` |
-| 10 | GitHub Actions builds, formatting, tests and browser workflow | `ci: add build and test workflow` |
+| Commit | Actual subject |
+| --- | --- |
+| `9bb56db` | Initial commit |
+| `e12197a` | chore(repo): configure SDK tooling and repository conventions |
+| `37f8f58` | feat(domain): add product models validation and passport contracts |
+| `9700feb` | feat(persistence): add atomic CSV imports and versioned SQLite storage |
+| `ee83599` | feat(api): expose product passports QR codes and demo visibility |
+| `6c72415` | test(backend): cover validation imports passports and version history |
+| `485a69a` | feat(frontend): add product dashboard import and passport views |
+| `34d1c01` | test(frontend): cover UI workflows and browser accessibility |
+| `07c69fd` | docs: document setup architecture and assessment acceptance |
+| `b5f86b8` | ci: add backend frontend and browser checks |
 
-Example commands for the first logical boundary:
+Browse the [public commit history](https://github.com/GorkemErtas/mini-dpp-platform/commits/main/).
+The previous proposal to construct an incremental history is obsolete.
+
+## Verified CI evidence
+
+[Build and test run #1](https://github.com/GorkemErtas/mini-dpp-platform/actions/runs/41825678774)
+was triggered by a push to `main` at the reviewed SHA on **2026-11-04**. It started
+at **12:01:19 UTC (15:01:19 Türkiye time)** and completed successfully by
+**12:02:32 UTC (15:02:32 Türkiye time)**, on attempt 1.
+
+| Job | Verified result |
+| --- | --- |
+| backend | Success: locked restore, Release build, formatting and xUnit tests |
+| frontend | Success: npm ci, typecheck, lint, formatting, Vitest and production build |
+| browser | Success: dependency setup, Chromium install and Playwright workflow |
+
+This remote run covers the reviewed base SHA. Local results for the submission
+review fixes are in [REVIEW.md](REVIEW.md). Runs for subsequent commits are on the
+[Actions page](https://github.com/GorkemErtas/mini-dpp-platform/actions).
+
+## Current review changes
+
+The submission review corrects documentation and adds Git checkout attributes for
+reproducible Windows formatting and unchanged input bytes. Application source,
+database schema, API contracts, the PDF and existing Git history are unchanged.
+The review initially left its changes unstaged and uncommitted. The owner then
+explicitly authorized committing and pushing these fixes. The table above records
+the reviewed base history; the delivery commit appears in the public Git history.
+
+Read-only inspection commands, from the repository root:
 
 ```sh
-git diff --no-index /dev/null global.json
-git add .gitignore .editorconfig global.json .config/dotnet-tools.json backend/Directory.Build.props backend/MiniDpp.sln
-git add backend/src/*/*.csproj backend/tests/*/*.csproj backend/**/packages.lock.json
-git diff --cached
-git commit -m "chore: initialize mini dpp solution"
+git status --short
+git log --oneline --reverse
+git diff --stat
+git diff --check
+git diff
 ```
-
-New files are untracked, so `git add -p` alone will not offer their hunks. For files
-you want to split, first mark only those paths with intent-to-add, then review hunks:
-
-```sh
-git add -N backend/src/MiniDpp.Api/Program.cs
-git add -p backend/src/MiniDpp.Api/Program.cs
-git diff --cached
-```
-
-On Windows PowerShell, review a new file with `Get-Content` rather than the Unix
-`/dev/null` example above. Prefer your editor's staged-diff view for file splitting.
-The initial project files reference later source files by convention; stages 1–6 may
-reasonably be combined into a coherent backend commit instead of manufacturing
-incomplete intermediate states. This plan is a set of honest logical boundaries,
-not a claim that those historical steps already occurred.
