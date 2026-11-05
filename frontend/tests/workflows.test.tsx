@@ -1,7 +1,8 @@
 import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { setLanguage } from '../src/i18n';
 import { App } from '../src/App';
 import type { Passport } from '../src/api';
 
@@ -32,6 +33,7 @@ function mount(path = '/') {
 }
 
 afterEach(() => vi.unstubAllGlobals());
+beforeEach(() => setLanguage('en'));
 
 describe('CSV import', () => {
   it('uploads multipart CSV and renders exact partial-success summary and row errors', async () => {
@@ -226,7 +228,7 @@ describe('passport detail', () => {
     ).toBe(true);
     expect(screen.getByRole('link', { name: /HTML passport/ })).toHaveAttribute(
       'href',
-      '/dpp/08690000000012?rol=yetkili',
+      '/dpp/08690000000012?lang=en&rol=yetkili',
     );
     await user.click(screen.getByRole('switch', { name: 'Authorized demo' }));
     expect(

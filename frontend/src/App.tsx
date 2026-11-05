@@ -1,3 +1,5 @@
+import { LanguageSwitcher } from './LanguageSwitcher';
+import { useI18n } from './i18n';
 import {
   ArrowUpRight,
   BookOpen,
@@ -16,6 +18,7 @@ import { ImportPage } from './ImportPage';
 import { DetailPage } from './DetailPage';
 
 export function App() {
+  const { t, language } = useI18n();
   const { pathname } = useLocation();
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -23,53 +26,59 @@ export function App() {
   }, [pathname]);
   const section =
     pathname === '/import'
-      ? 'CSV import'
+      ? t('csvImport')
       : pathname.startsWith('/products/')
-        ? 'Product passport'
-        : 'Products';
+        ? t('passport')
+        : pathname === '/'
+          ? t('products')
+          : t('pageNotFound');
+  useEffect(() => {
+    document.title = `${section} · Mini DPP`;
+    document
+      .querySelector('meta[name="description"]')
+      ?.setAttribute('content', t('pageDescription'));
+  }, [section, language, t]);
   return (
     <div className="app-shell">
       <a className="skip-link" href="#main">
-        Skip to content
+        {t('skipContent')}
       </a>
-      <aside className="sidebar" aria-label="Primary navigation">
+      <aside className="sidebar" aria-label={t('primaryNav')}>
         <Link className="brand" to="/">
           <span className="brand-icon">
             <Fingerprint size={24} />
           </span>
           <span>
             mini<span className="brand-light">dpp</span>
-            <small>PRODUCT TRANSPARENCY</small>
+            <small>{t('transparencyCaps')}</small>
           </span>
         </Link>
         <div className="workspace-label">
           <span className="workspace-avatar">E</span>
           <div>
-            ESG Next<small>Assessment workspace</small>
+            ESG Next<small>{t('assessmentWorkspace')}</small>
           </div>
           <PanelLeftClose size={16} aria-hidden="true" />
         </div>
-        <span className="nav-label">WORKSPACE</span>
+        <span className="nav-label">{t('workspaceCaps')}</span>
         <nav>
           <NavLink to="/" end>
             <Package size={19} />
-            Products
+            {t('products')}
           </NavLink>
           <NavLink to="/import">
             <FileUp size={19} />
-            CSV import
+            {t('csvImport')}
           </NavLink>
         </nav>
         <div className="sidebar-note">
           <div className="note-icon">
             <Leaf size={20} />
           </div>
-          <strong>A clearer product story.</strong>
-          <p>
-            Bring product data together. Make it easy to understand and share.
-          </p>
+          <strong>{t('clearStory')}</strong>
+          <p>{t('bringData')}</p>
           <Link to="/import">
-            Create a passport <ArrowUpRight size={15} />
+            {t('createPassport')} <ArrowUpRight size={15} />
           </Link>
         </div>
         <div className="sidebar-footer">
@@ -77,27 +86,31 @@ export function App() {
             <Layers3 size={17} />
           </span>
           <div>
-            Built for transparency<small>Mini DPP · ESG Next</small>
+            {t('builtTransparency')}
+            <small>Mini DPP · ESG Next</small>
           </div>
         </div>
       </aside>
       <div className="main-shell">
         <header className="topbar">
           <div className="breadcrumb">
-            <span>Workspace</span>
+            <span>{t('workspace')}</span>
             <ChevronRight size={14} />
             <strong>{section}</strong>
           </div>
-          <a
-            className="documentation"
-            href="/swagger"
-            target="_blank"
-            rel="noreferrer"
-          >
-            <BookOpen size={16} />
-            API documentation
-            <ArrowUpRight size={13} />
-          </a>
+          <div className="topbar-actions">
+            <LanguageSwitcher />
+            <a
+              className="documentation"
+              href="/swagger"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <BookOpen size={16} />
+              {t('apiDocs')}
+              <ArrowUpRight size={13} />
+            </a>
+          </div>
         </header>
         <main id="main" tabIndex={-1}>
           <Routes>
@@ -108,16 +121,16 @@ export function App() {
               path="*"
               element={
                 <div className="page">
-                  <h1>Page not found</h1>
-                  <Link to="/">Back to products</Link>
+                  <h1>{t('pageNotFound')}</h1>
+                  <Link to="/">{t('backProducts')}</Link>
                 </div>
               }
             />
           </Routes>
         </main>
         <footer className="page-footer">
-          <span>Mini Digital Product Passport</span>
-          <span>Thoughtful data. Transparent products.</span>
+          <span>{t('miniPassport')}</span>
+          <span>{t('footerMotto')}</span>
         </footer>
       </div>
     </div>

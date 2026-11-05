@@ -8,6 +8,7 @@ test('real CSV import, dashboard, role visibility, history and passport outputs'
   const browserErrors: string[] = [];
   page.on('pageerror', (error) => browserErrors.push(error.message));
   await page.goto('/import');
+  await page.getByRole('button', { name: 'English', exact: true }).click();
   await page
     .getByLabel('Choose CSV file')
     .setInputFiles(resolve('../samples/urunler_duzeltilmis_test.csv'));

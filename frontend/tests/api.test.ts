@@ -1,7 +1,9 @@
-import { afterEach, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 import { api, request } from '../src/api';
+import { setLanguage } from '../src/i18n';
 
 afterEach(() => vi.unstubAllGlobals());
+beforeEach(() => setLanguage('en'));
 
 it('encodes search text and passes cancellation', async () => {
   const fetch = vi.fn().mockResolvedValue(new Response('[]'));
@@ -10,6 +12,7 @@ it('encodes search text and passes cancellation', async () => {
   await api.products('denim & cotton', controller.signal);
   expect(fetch).toHaveBeenCalledWith('/api/products?q=denim%20%26%20cotton', {
     signal: controller.signal,
+    headers: new Headers({ 'Accept-Language': 'en' }),
   });
 });
 

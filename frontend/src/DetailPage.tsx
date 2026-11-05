@@ -1,3 +1,4 @@
+import { useI18n } from './i18n';
 import {
   ArrowDownToLine,
   ArrowLeft,
@@ -16,9 +17,10 @@ import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { api, roleQuery } from './api';
 import type { Passport } from './api';
 import { Composition, ErrorMessage, Loading } from './components';
-import { formatDate } from './format';
+import { formatNumber, formatDate } from './format';
 
 export function DetailPage() {
+  const { t } = useI18n();
   const { gtin = '' } = useParams();
   const [params, setParams] = useSearchParams();
   const authorized = params.get('rol') === 'yetkili';
@@ -26,37 +28,32 @@ export function DetailPage() {
     <div className="page detail-page">
       <Link to="/" className="back-link">
         <ArrowLeft size={15} />
-        All products
+        {t('allProducts')}
       </Link>
       <div className="page-heading">
         <div>
-          <p className="eyebrow">DIGITAL PRODUCT PASSPORT</p>
+          <p className="eyebrow">{t('digitalPassportCaps')}</p>
           <h1>
-            Product passport
+            {t('passport')}
             <span className="heading-dot">.</span>
           </h1>
           <p className="subtitle mono">{gtin}</p>
         </div>
         <span className="passport-badge">
           <Fingerprint size={17} />
-          Product identity
+          {t('identity')}
         </span>
       </div>
       <div className="role-panel">
         <div>
           <ShieldCheck size={20} />
           <div>
-            <strong>
-              {authorized ? 'Authorized demo view' : 'Consumer view'}
-            </strong>
-            <p>
-              Demo visibility only. The role parameter is not real
-              authorization.
-            </p>
+            <strong>{authorized ? t('authorizedView') : t('consumer')}</strong>
+            <p>{t('roleWarning')}</p>
           </div>
         </div>
         <label className="role-toggle">
-          <span>Authorized demo</span>
+          <span>{t('authorizedDemo')}</span>
           <input
             type="checkbox"
             role="switch"
@@ -85,6 +82,7 @@ function DetailContent({
   gtin: string;
   authorized: boolean;
 }) {
+  const { t, language } = useI18n();
   const [data, setData] = useState<{
     product: Passport;
     history: Passport[];
@@ -101,12 +99,10 @@ function DetailContent({
       .then(([product, history]) => setData({ product, history }))
       .catch((err: unknown) => {
         if (!controller.signal.aborted)
-          setError(
-            err instanceof Error ? err.message : 'Could not load passport.',
-          );
+          setError(err instanceof Error ? err.message : t('passportFailed'));
       });
     return () => controller.abort();
-  }, [gtin, authorized, reload]);
+  }, [gtin, authorized, reload, language, t]);
   const base = `/dpp/${encodeURIComponent(gtin)}`;
   return (
     <>
@@ -119,7 +115,7 @@ function DetailContent({
           }}
         />
       ) : !data ? (
-        <Loading label="Loading product passport…" />
+        <Loading label={t('loadingPassport')} />
       ) : (
         <>
           <div className="detail-grid">
@@ -127,18 +123,22 @@ function DetailContent({
               <section className="panel detail-information">
                 <div className="panel-heading">
                   <div>
-                    <h2>Made of more than a label.</h2>
-                    <p>The details behind this product.</p>
+                    <h2>{t('moreThanLabel')}</h2>
+                    <p>{t('productDetails')}</p>
                   </div>
-                  <span className="version">v{data.product.version}</span>
+                  <span className="version">
+                    {t('versionShort', {
+                      version: formatNumber(data.product.version),
+                    })}
+                  </span>
                 </div>
                 <dl className="detail-fields">
                   <div>
-                    <dt>Product model</dt>
+                    <dt>{t('model')}</dt>
                     <dd>{data.product.modelName}</dd>
                   </div>
                   <div>
-                    <dt>Batch number</dt>
+                    <dt>{t('batch')}</dt>
                     <dd>{data.product.batchNumber}</dd>
                   </div>
                   <div>
@@ -146,7 +146,7 @@ function DetailContent({
                     <dd className="mono">{data.product.gtin}</dd>
                   </div>
                   <div>
-                    <dt>Manufacturing location</dt>
+                    <dt>{t('manufacturingLocation')}</dt>
                     <dd>
                       <MapPin size={16} />
                       {data.product.location}
@@ -154,7 +154,7 @@ function DetailContent({
                   </div>
                 </dl>
                 <div className="fiber-section">
-                  <h3>Fiber composition</h3>
+                  <h3>{t('composition')}</h3>
                   <Composition
                     cotton={data.product.cotton}
                     elastane={data.product.elastane}
@@ -162,27 +162,28 @@ function DetailContent({
                 </div>
                 {authorized && data.product.carbonKgCo2e !== undefined && (
                   <div className="carbon-panel">
-                    <span>Carbon footprint · Authorized demo</span>
+                    <span>{t('carbonDemo')}</span>
                     <strong>
-                      {data.product.carbonKgCo2e} <small>kg CO2e</small>
+                      {formatNumber(data.product.carbonKgCo2e)}{' '}
+                      <small>kg CO2e</small>
                     </strong>
                   </div>
                 )}
                 <div className="updated-label">
                   <Clock3 size={14} />
-                  Updated {formatDate(data.product.updatedAt)}
+                  {t('updatedAt', { date: formatDate(data.product.updatedAt) })}
                 </div>
               </section>
               <div className="output-links">
                 <a
-                  href={`${base}${roleQuery(authorized)}`}
+                  href={`${base}?lang=${language}${authorized ? '&rol=yetkili' : ''}`}
                   target="_blank"
                   rel="noreferrer"
                 >
                   <FileText size={19} />
                   <span>
-                    <strong>HTML passport</strong>
-                    <small>The shareable product story</small>
+                    <strong>{t('htmlPassport')}</strong>
+                    <small>{t('shareableStory')}</small>
                   </span>
                   <ArrowUpRight size={17} />
                 </a>
@@ -193,8 +194,8 @@ function DetailContent({
                 >
                   <Code2 size={19} />
                   <span>
-                    <strong>JSON-LD data</strong>
-                    <small>Schema.org Product format</small>
+                    <strong>{t('jsonLd')}</strong>
+                    <small>{t('schemaFormat')}</small>
                   </span>
                   <ArrowUpRight size={17} />
                 </a>
@@ -203,20 +204,19 @@ function DetailContent({
             <aside className="panel qr-panel">
               <div className="qr-heading">
                 <QrCode size={19} />
-                <span>SCAN. EXPLORE. SHARE.</span>
+                <span>{t('scanExplore')}</span>
               </div>
               <h2>
-                A passport that
-                <br />
-                travels with the product.
+                {t('travelsFirst')} <br />
+                {t('travelsSecond')}
               </h2>
               <div className="qr-frame">
                 {qrError ? (
-                  <ErrorMessage message="QR preview could not load. Try opening the PNG below." />
+                  <ErrorMessage message={t('qrFailed')} />
                 ) : (
                   <img
                     src={`${base}/qr.png`}
-                    alt={`QR code for ${data.product.modelName} passport`}
+                    alt={t('qrAlt', { name: data.product.modelName })}
                     onError={() => setQrError(true)}
                     width="200"
                     height="200"
@@ -224,9 +224,8 @@ function DetailContent({
                 )}
               </div>
               <p>
-                Scan to open the consumer passport.
-                <br />
-                No app required.
+                {t('scanConsumer')} <br />
+                {t('noApp')}
               </p>
               <a
                 className="button primary"
@@ -234,9 +233,9 @@ function DetailContent({
                 download={`${gtin}-passport.png`}
               >
                 <ArrowDownToLine size={16} />
-                Download PNG
+                {t('downloadPng')}
               </a>
-              <small>QR always links to the consumer view.</small>
+              <small>{t('consumerQr')}</small>
             </aside>
           </div>
           <section className="panel history-panel">
@@ -244,13 +243,12 @@ function DetailContent({
               <div>
                 <h2>
                   <History size={19} />
-                  Version history{' '}
-                  <span className="count-badge">{data.history.length}</span>
+                  {t('history')}{' '}
+                  <span className="count-badge">
+                    {formatNumber(data.history.length)}
+                  </span>
                 </h2>
-                <p>
-                  A traceable record of every change. Identical imports never
-                  create a version.
-                </p>
+                <p>{t('historyInfo')}</p>
               </div>
             </div>
             <ol className="timeline">
@@ -259,9 +257,13 @@ function DetailContent({
                   <span className="timeline-dot" />
                   <div className="timeline-body">
                     <div className="timeline-title">
-                      <strong>Version {snapshot.version}</strong>
+                      <strong>
+                        {t('version', {
+                          version: formatNumber(snapshot.version),
+                        })}
+                      </strong>
                       {index === 0 && (
-                        <span className="current-badge">Current</span>
+                        <span className="current-badge">{t('current')}</span>
                       )}
                       <time dateTime={snapshot.updatedAt}>
                         {formatDate(snapshot.updatedAt)}
@@ -269,18 +271,23 @@ function DetailContent({
                     </div>
                     <p>
                       {snapshot.version === 1
-                        ? 'Passport created'
-                        : 'Product data updated'}{' '}
+                        ? t('passportCreated')
+                        : t('dataUpdated')}{' '}
                       · {snapshot.modelName} · {snapshot.batchNumber}
                     </p>
                     <div className="snapshot-details">
                       <span>
-                        {snapshot.cotton}% cotton / {snapshot.elastane}%
-                        elastane
+                        {t('cotton', { value: formatNumber(snapshot.cotton) })}{' '}
+                        /{' '}
+                        {t('elastane', {
+                          value: formatNumber(snapshot.elastane),
+                        })}
                       </span>
                       <span>{snapshot.location}</span>
                       {authorized && snapshot.carbonKgCo2e !== undefined && (
-                        <span>{snapshot.carbonKgCo2e} kg CO2e</span>
+                        <span>
+                          {formatNumber(snapshot.carbonKgCo2e)} kg CO2e
+                        </span>
                       )}
                     </div>
                   </div>

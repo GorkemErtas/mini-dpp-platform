@@ -1,3 +1,5 @@
+import { getLanguage, t } from './i18n';
+
 export interface Passport {
   gtin: string;
   modelName: string;
@@ -20,9 +22,17 @@ export interface ImportReport {
 }
 
 export async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  const response = await fetch(path, init);
+  const headers = new Headers(init?.headers);
+  headers.set('Accept-Language', getLanguage());
+  let response: Response;
+  try {
+    response = await fetch(path, { ...init, headers });
+  } catch (error) {
+    if (error instanceof Error && error.name === 'AbortError') throw error;
+    throw new Error(t('networkFailed'), { cause: error });
+  }
   if (!response.ok) {
-    let message = `Request failed (${response.status}). Please try again.`;
+    let message = t('requestFailed', { status: response.status });
     try {
       const problem = (await response.json()) as {
         title?: string;

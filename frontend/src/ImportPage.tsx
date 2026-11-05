@@ -1,3 +1,5 @@
+import { formatNumber } from './format';
+import { useI18n } from './i18n';
 import {
   ArrowRight,
   Check,
@@ -17,6 +19,7 @@ import type { ImportReport } from './api';
 import { ErrorMessage } from './components';
 
 export function ImportPage() {
+  const { t, localizeMessage } = useI18n();
   const [file, setFile] = useState<File | null>(null);
   const [busy, setBusy] = useState(false);
   const [dragging, setDragging] = useState(false);
@@ -28,12 +31,12 @@ export function ImportPage() {
     setReport(null);
     if (!selected.name.toLowerCase().endsWith('.csv')) {
       setFile(null);
-      setError('Choose a .csv file. Other file formats are not supported.');
+      setError(t('chooseCsvError'));
       return;
     }
     if (selected.size > 2 * 1024 * 1024 || selected.size === 0) {
       setFile(null);
-      setError('Choose a nonempty CSV file no larger than 2 MiB.');
+      setError(t('fileSizeError'));
       return;
     }
     setError('');
@@ -48,9 +51,7 @@ export function ImportPage() {
     try {
       setReport(await api.import(file));
     } catch (err: unknown) {
-      setError(
-        err instanceof Error ? err.message : 'Import failed. Please retry.',
-      );
+      setError(err instanceof Error ? err.message : t('importFailed'));
     } finally {
       setBusy(false);
     }
@@ -59,23 +60,22 @@ export function ImportPage() {
     <div className="page import-page">
       <div className="page-heading">
         <div>
-          <p className="eyebrow">FROM SPREADSHEET TO PASSPORT</p>
+          <p className="eyebrow">{t('spreadsheetPassport')}</p>
           <h1>
-            Import product data<span className="heading-dot">.</span>
+            {t('importData')}
+            <span className="heading-dot">.</span>
           </h1>
-          <p className="subtitle">
-            One CSV. Clear validation. A passport for every valid product.
-          </p>
+          <p className="subtitle">{t('importSubtitle')}</p>
         </div>
       </div>
       <div className="import-layout">
         <section className="panel upload-panel">
           <div className="panel-heading">
             <div>
-              <h2>Upload your CSV</h2>
-              <p>Valid rows are saved even when other rows need attention.</p>
+              <h2>{t('uploadCsv')}</h2>
+              <p>{t('validRowsSaved')}</p>
             </div>
-            <span className="step-label">01 / UPLOAD</span>
+            <span className="step-label">{t('uploadStep')}</span>
           </div>
           <form onSubmit={submit}>
             <div
@@ -94,18 +94,18 @@ export function ImportPage() {
               <div className="upload-icon">
                 <FileUp size={28} />
               </div>
-              <h3>Drop your product CSV here</h3>
-              <p>or choose a file from your computer</p>
+              <h3>{t('dropCsv')}</h3>
+              <p>{t('chooseComputer')}</p>
               <label
                 className={`button secondary file-label ${busy ? 'disabled' : ''}`}
               >
-                Choose CSV file
+                {t('chooseCsv')}
                 <input
                   ref={input}
                   className="file-input"
                   type="file"
                   accept=".csv,text/csv"
-                  aria-label="Choose CSV file"
+                  aria-label={t('chooseCsv')}
                   disabled={busy}
                   onChange={(event) => {
                     chooseFile(event.target.files?.[0]);
@@ -113,7 +113,7 @@ export function ImportPage() {
                   }}
                 />
               </label>
-              <small>UTF-8 CSV · Up to 2 MiB · 10,000 rows</small>
+              <small>{t('uploadLimits')}</small>
             </div>
             {file && (
               <div className="selected-file">
@@ -121,13 +121,15 @@ export function ImportPage() {
                 <div>
                   <strong>{file.name}</strong>
                   <span>
-                    {(file.size / 1024).toFixed(1)} KB · Ready to validate
+                    {t('fileReady', {
+                      size: formatNumber(file.size / 1024, 1),
+                    })}
                   </span>
                 </div>
                 <button
                   type="button"
                   className="icon-link"
-                  aria-label="Remove selected file"
+                  aria-label={t('removeFile')}
                   disabled={busy}
                   onClick={() => {
                     setFile(null);
@@ -142,7 +144,7 @@ export function ImportPage() {
             <div className="upload-actions">
               <span>
                 <Check size={15} />
-                Existing GTINs update safely
+                {t('safeUpdates')}
               </span>
               <button
                 className="button primary"
@@ -152,19 +154,19 @@ export function ImportPage() {
                 {busy ? (
                   <>
                     <LoaderCircle className="spin" size={17} />
-                    Importing…
+                    {t('importing')}
                   </>
                 ) : (
                   <>
                     <FileUp size={17} />
-                    Validate & import
+                    {t('validateImport')}
                   </>
                 )}
               </button>
             </div>
             {busy && (
               <p className="upload-progress" role="status">
-                Validating records and saving valid rows. Please wait…
+                {t('importProgress')}
               </p>
             )}
           </form>
@@ -174,38 +176,29 @@ export function ImportPage() {
             <Info size={23} />
           </div>
           <h2>
-            A little preparation
-            <br />
-            goes a long way.
+            {t('preparationFirst')} <br />
+            {t('preparationSecond')}
           </h2>
-          <p>
-            Keep the original CSV format so product identifiers stay intact.
-          </p>
+          <p>{t('keepCsvFormat')}</p>
           <ul>
             <li>
               <CheckCircle2 size={17} />
-              <span>GTINs need 14 digits and a valid GS1 check digit.</span>
+              <span>{t('gtinGuide')}</span>
             </li>
             <li>
               <CheckCircle2 size={17} />
-              <span>Cotton and elastane percentages must add up to 100.</span>
+              <span>{t('compositionGuide')}</span>
             </li>
             <li>
               <CheckCircle2 size={17} />
-              <span>Use a dot for decimal numbers, such as 12.4.</span>
+              <span>{t('decimalGuide')}</span>
             </li>
             <li>
               <CheckCircle2 size={17} />
-              <span>
-                Include model, batch, production location and nonnegative carbon
-                data.
-              </span>
+              <span>{t('requiredGuide')}</span>
             </li>
           </ul>
-          <div className="guide-note">
-            Avoid opening and resaving the CSV in Excel: leading zeros can be
-            lost.
-          </div>
+          <div className="guide-note">{t('excelWarning')}</div>
         </aside>
       </div>
       {report && (
@@ -217,50 +210,44 @@ export function ImportPage() {
             <div>
               <h2 id="result-title">
                 <CheckCircle2 size={20} />
-                Import complete
+                {t('importComplete')}
               </h2>
-              <p>
-                {report.total} data rows checked. Header is CSV row 1; blank
-                lines are skipped.
-              </p>
+              <p>{t('checkedRows', { total: formatNumber(report.total) })}</p>
             </div>
             <Link to="/" className="button secondary">
-              View products
+              {t('viewProducts')}
               <ArrowRight size={16} />
             </Link>
           </div>
           <div className="result-grid" role="status">
             {(
               [
-                ['Imported', report.imported],
-                ['Updated', report.updated],
-                ['Unchanged', report.unchanged],
-                ['Rejected', report.failed],
+                ['imported', report.imported],
+                ['updated', report.updated],
+                ['unchanged', report.unchanged],
+                ['rejected', report.failed],
               ] as const
             ).map(([label, value]) => (
               <div
                 key={label}
-                className={label === 'Rejected' && value > 0 ? 'rejected' : ''}
+                className={label === 'rejected' && value > 0 ? 'rejected' : ''}
               >
-                <strong>{value}</strong>
-                <span>{label}</span>
+                <strong>{formatNumber(value)}</strong>
+                <span>{t(label)}</span>
               </div>
             ))}
           </div>
           {report.errors.length > 0 && (
             <div className="row-errors">
-              <h3>Rows that need attention</h3>
-              <p>
-                These records were not saved. Correct them and upload the file
-                again.
-              </p>
+              <h3>{t('rowsAttention')}</h3>
+              <p>{t('rowsNotSaved')}</p>
               <div className="table-scroll">
                 <table>
                   <thead>
                     <tr>
-                      <th>CSV ROW</th>
-                      <th>FIELD</th>
-                      <th>WHAT TO FIX</th>
+                      <th>{t('csvRowCaps')}</th>
+                      <th>{t('fieldCaps')}</th>
+                      <th>{t('fixCaps')}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -268,12 +255,14 @@ export function ImportPage() {
                       row.errors.map((issue, index) => (
                         <tr key={`${row.row}-${index}`}>
                           <td>
-                            <span className="row-badge">Row {row.row}</span>
+                            <span className="row-badge">
+                              {t('row', { row: formatNumber(row.row) })}
+                            </span>
                           </td>
                           <td>
                             <code>{issue.field}</code>
                           </td>
-                          <td>{issue.message}</td>
+                          <td>{localizeMessage(issue.message)}</td>
                         </tr>
                       )),
                     )}
@@ -284,8 +273,7 @@ export function ImportPage() {
           )}
           <div className="result-footer">
             <RefreshCw size={15} />
-            Identical rows are unchanged. Only real changes create a new
-            version.
+            {t('noOpInfo')}
           </div>
         </section>
       )}

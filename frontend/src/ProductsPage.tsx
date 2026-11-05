@@ -1,3 +1,5 @@
+import { formatNumber } from './format';
+import { useI18n } from './i18n';
 import {
   ArrowDownToLine,
   ArrowRight,
@@ -14,6 +16,7 @@ import type { Passport } from './api';
 import { EmptyState, ErrorMessage, Loading, ProductRow } from './components';
 
 export function ProductsPage() {
+  const { t, language } = useI18n();
   const [search, setSearch] = useState('');
   const [location, setLocation] = useState('');
   const [products, setProducts] = useState<Passport[] | null>(null);
@@ -26,12 +29,10 @@ export function ProductsPage() {
       .then(setProducts)
       .catch((err: unknown) => {
         if (!controller.signal.aborted)
-          setError(
-            err instanceof Error ? err.message : 'Could not load products.',
-          );
+          setError(err instanceof Error ? err.message : t('productsFailed'));
       });
     return () => controller.abort();
-  }, [reload]);
+  }, [reload, language, t]);
   const filtered = products?.filter(
     (product) =>
       [product.modelName, product.gtin, product.batchNumber, product.location]
@@ -49,33 +50,32 @@ export function ProductsPage() {
     <div className="page">
       <div className="page-heading">
         <div>
-          <p className="eyebrow">YOUR PRODUCT DATA, CONNECTED</p>
+          <p className="eyebrow">{t('connectedData')}</p>
           <h1>
-            Product passports<span className="heading-dot">.</span>
+            {t('passports')}
+            <span className="heading-dot">.</span>
           </h1>
-          <p className="subtitle">
-            A transparent view of every product, from composition to origin.
-          </p>
+          <p className="subtitle">{t('productsSubtitle')}</p>
         </div>
         <Link className="button primary" to="/import">
           <FileUp size={17} />
-          Import CSV
+          {t('importCsv')}
         </Link>
       </div>
       <section className="overview-banner">
         <div className="banner-content">
           <span className="banner-tag">
             <span />
-            MADE FOR TRANSPARENCY
+            {t('transparencyTag')}
           </span>
           <h2>
-            Every product has a story.
+            {t('storyFirst')}
             <br />
-            Make yours an open book.
+            {t('storySecond')}
           </h2>
-          <p>Turn your product data into clear, shareable digital passports.</p>
+          <p>{t('turnData')}</p>
           <Link to="/import">
-            Start with a CSV <ArrowRight size={16} />
+            {t('startCsv')} <ArrowRight size={16} />
           </Link>
         </div>
         <div className="passport-art" aria-hidden="true">
@@ -85,9 +85,9 @@ export function ProductsPage() {
             <div className="art-card-top">
               <Fingerprint size={31} />
               <span>
-                DIGITAL PRODUCT
+                {t('digitalProductCaps')}
                 <br />
-                PASSPORT
+                {t('passportCaps')}
               </span>
             </div>
             <div className="art-lines">
@@ -100,7 +100,7 @@ export function ProductsPage() {
               ))}
             </div>
             <div className="art-card-bottom">
-              <span>PRODUCT IDENTITY</span>
+              <span>{t('identityCaps')}</span>
               <ShieldCheck size={20} />
             </div>
           </div>
@@ -109,15 +109,15 @@ export function ProductsPage() {
           </span>
         </div>
       </section>
-      <section className="stats-grid" aria-label="Product overview">
+      <section className="stats-grid" aria-label={t('overview')}>
         <div className="stat-card">
           <span className="stat-icon">
             <Fingerprint size={20} />
           </span>
           <div>
-            <span className="stat-label">Product passports</span>
-            <strong>{products ? products.length : '—'}</strong>
-            <small>Unique imported GTINs</small>
+            <span className="stat-label">{t('passports')}</span>
+            <strong>{products ? formatNumber(products.length) : '—'}</strong>
+            <small>{t('uniqueGtins')}</small>
           </div>
         </div>
         <div className="stat-card">
@@ -125,9 +125,9 @@ export function ProductsPage() {
             <ArrowDownToLine size={20} />
           </span>
           <div>
-            <span className="stat-label">Product models</span>
-            <strong>{products ? modelCount : '—'}</strong>
-            <small>Connected to batch records</small>
+            <span className="stat-label">{t('models')}</span>
+            <strong>{products ? formatNumber(modelCount) : '—'}</strong>
+            <small>{t('connectedBatches')}</small>
           </div>
         </div>
         <div className="stat-card">
@@ -135,9 +135,9 @@ export function ProductsPage() {
             <MapPin size={20} />
           </span>
           <div>
-            <span className="stat-label">Production locations</span>
-            <strong>{products ? locations.length : '—'}</strong>
-            <small>Places behind your products</small>
+            <span className="stat-label">{t('locations')}</span>
+            <strong>{products ? formatNumber(locations.length) : '—'}</strong>
+            <small>{t('places')}</small>
           </div>
         </div>
       </section>
@@ -148,36 +148,38 @@ export function ProductsPage() {
         <div className="panel-heading">
           <div>
             <h2 id="products-title">
-              All products{' '}
+              {t('allProducts')}{' '}
               {products && (
-                <span className="count-badge">{products.length}</span>
+                <span className="count-badge">
+                  {formatNumber(products.length)}
+                </span>
               )}
             </h2>
-            <p>Explore and manage your digital product passports.</p>
+            <p>{t('exploreProducts')}</p>
           </div>
           <span className="consumer-badge">
             <ShieldCheck size={14} />
-            Consumer view
+            {t('consumer')}
           </span>
         </div>
         <div className="table-toolbar">
           <label className="search-input">
             <Search size={17} />
-            <span className="sr-only">Search products</span>
+            <span className="sr-only">{t('searchProducts')}</span>
             <input
-              placeholder="Search by model, GTIN, batch or location…"
+              placeholder={t('searchPlaceholder')}
               value={search}
               onChange={(event) => setSearch(event.target.value)}
             />
           </label>
           <label className="location-filter">
             <MapPin size={15} />
-            <span className="sr-only">Production location</span>
+            <span className="sr-only">{t('productionLocation')}</span>
             <select
               value={location}
               onChange={(event) => setLocation(event.target.value)}
             >
-              <option value="">All locations</option>
+              <option value="">{t('allLocations')}</option>
               {locations.map((place) => (
                 <option key={place}>{place}</option>
               ))}
@@ -195,16 +197,16 @@ export function ProductsPage() {
         ) : products === null ? (
           <Loading />
         ) : products.length === 0 ? (
-          <EmptyState title="Your first passport starts here">
-            <p>Upload your product CSV to bring your collection to life.</p>
+          <EmptyState title={t('firstPassport')}>
+            <p>{t('uploadCollection')}</p>
             <Link className="button primary" to="/import">
               <FileUp size={17} />
-              Import a CSV
+              {t('importACsv')}
             </Link>
           </EmptyState>
         ) : filtered?.length === 0 ? (
-          <EmptyState title="No products match">
-            <p>Try another search or production location.</p>
+          <EmptyState title={t('noMatches')}>
+            <p>{t('tryFilter')}</p>
             <button
               className="button secondary"
               onClick={() => {
@@ -212,7 +214,7 @@ export function ProductsPage() {
                 setLocation('');
               }}
             >
-              Clear filters
+              {t('clearFilters')}
             </button>
           </EmptyState>
         ) : (
@@ -221,13 +223,13 @@ export function ProductsPage() {
               <table>
                 <thead>
                   <tr>
-                    <th>PRODUCT MODEL</th>
+                    <th>{t('modelCaps')}</th>
                     <th className="gtin-cell">GTIN</th>
-                    <th className="batch-cell">BATCH</th>
-                    <th className="location-cell">ORIGIN</th>
-                    <th>VERSION</th>
+                    <th className="batch-cell">{t('batchCaps')}</th>
+                    <th className="location-cell">{t('originCaps')}</th>
+                    <th>{t('versionCaps')}</th>
                     <th>
-                      <span className="sr-only">Open passport</span>
+                      <span className="sr-only">{t('openPassport')}</span>
                     </th>
                   </tr>
                 </thead>
@@ -240,11 +242,14 @@ export function ProductsPage() {
             </div>
             <div className="table-footer">
               <span>
-                Showing {filtered?.length} of {products.length} products
+                {t('showingProducts', {
+                  count: formatNumber(filtered?.length ?? 0),
+                  total: formatNumber(products.length),
+                })}
               </span>
               <span>
                 <span className="status-dot" />
-                Persistent product records
+                {t('persistentRecords')}
               </span>
             </div>
           </>
@@ -252,10 +257,7 @@ export function ProductsPage() {
       </section>
       <div className="info-strip">
         <ShieldCheck size={18} />
-        <p>
-          Consumer passports keep carbon data hidden. Explore the authorized
-          demo inside a product passport.
-        </p>
+        <p>{t('consumerInfo')}</p>
       </div>
     </div>
   );
