@@ -54,12 +54,24 @@ test('real CSV import, dashboard, role visibility, history and passport outputs'
     page.getByText('Carbon footprint · Authorized demo'),
   ).toBeVisible();
   await expect(page.getByText('12.4 kg CO2e', { exact: true })).toHaveCount(2);
-  await page.getByRole('switch', { name: 'Authorized demo' }).click();
-  await expect(
-    page.getByRole('switch', { name: 'Authorized demo' }),
-  ).not.toBeChecked();
-  await expect(page.getByText('Made of more than a label.')).toBeVisible();
-  expect(await page.content()).not.toContain('12.4');
+  const roleSwitch = page.getByRole('switch', { name: 'Authorized demo' });
+  const productDetails = page.locator('.detail-information');
+  const versionHistory = page.locator('.history-panel');
+  await expect(productDetails).toContainText('12.4');
+  await expect(versionHistory).toContainText('12.4 kg CO2e');
+  await roleSwitch.click();
+  await expect(roleSwitch).not.toBeChecked();
+  await expect(page).toHaveURL(
+    (url) =>
+      url.pathname === '/products/08690000000012' &&
+      !url.searchParams.has('rol'),
+  );
+  await expect(productDetails).toBeVisible();
+  await expect(versionHistory).toBeVisible();
+  await expect(productDetails.locator('.carbon-panel')).toHaveCount(0);
+  await expect(productDetails).not.toContainText(/12[.,]4|kg CO2e/);
+  await expect(versionHistory).not.toContainText(/12[.,]4|kg CO2e/);
+  await expect.poll(() => page.content()).not.toContain('12.4');
   await expect(page.getByText('Version 1', { exact: true })).toBeVisible();
   await page.screenshot({
     path: '../.tools/screenshots/detail.png',
