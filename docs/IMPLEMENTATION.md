@@ -1,114 +1,146 @@
-# Implementation and acceptance plan
+# Uygulama ve kabul planı
 
-Sources read in full: `Mini_DPP_Teknik_Odev_ESG_Next.pdf` (two pages) and
-`urunler_duzeltilmis_test.csv` (five data records). The supplied CSV is copied
-byte-for-byte into samples; it must never be edited or resaved through Excel.
+Başlangıç uygulamasında `Mini_DPP_Teknik_Odev_ESG_Next.pdf` dosyasının iki sayfası ve
+`urunler_duzeltilmis_test.csv` dosyasının beş veri kaydı bütünüyle incelenmiştir.
+Örnek CSV, `samples` dizinine baytları değiştirilmeden alınmıştır; düzenlenmemeli
+veya Excel üzerinden yeniden kaydedilmemelidir.
 
-## A. Requirements checklist
+## A. Gereksinim listesi
 
-- [x] Mandatory: CSV upload; independently validate rows; report physical CSV line numbers.
-- [x] Mandatory: preserve 14-character GTIN text and validate GS1 check digit.
-- [x] Mandatory: decimal fiber percentages in [0,100], total 100; nonnegative carbon;
-  nonblank model, batch and manufacturing location.
-- [x] Mandatory: relational Model -> Batch persistence in SQLite.
-- [x] Mandatory: human-readable `/dpp/{gtin}` and schema.org Product JSON-LD.
-- [x] Mandatory: real PNG QR linking to the HTML passport.
-- [x] Mandatory: carbon hidden by default and visible with `?rol=yetkili` in both outputs.
-- [x] Mandatory: reproducible setup, sample workflow and design decisions in README.
-- [x] Bonus (in scope): React + TypeScript interface.
-- [x] Bonus (in scope): full immutable product version history.
-- [x] Expanded brief: migrations, DTOs, bounded upload, CORS, consistent errors,
-  automated backend/frontend tests, OpenAPI and CI. These are implementation
-  additions, rather than extra mandatory PDF requirements. No cloud deployment
-  is required.
+- [x] Zorunlu: CSV yükleme, bağımsız satır doğrulaması, fiziksel satır numaraları.
+- [x] Zorunlu: 14 karakterlik GTIN metnini koruma ve GS1 kontrol basamağı doğrulaması.
+- [x] Zorunlu: [0,100] aralığında, toplamı 100 olan ondalık elyaf yüzdeleri;
+  negatif olmayan karbon; boş olmayan model, parti ve üretim yeri.
+- [x] Zorunlu: SQLite üzerinde ilişkili Model → Batch kalıcılığı.
+- [x] Zorunlu: okunabilir `/dpp/{gtin}` HTML’i ve schema.org Product JSON-LD.
+- [x] Zorunlu: HTML pasaportuna yönlenen gerçek PNG QR.
+- [x] Zorunlu: karbonun varsayılan gizli, `?rol=yetkili` ile iki çıktıda görünür olması.
+- [x] Zorunlu: README’de tekrarlanabilir kurulum, örnek akış ve tasarım kararları.
+- [x] Bonus: React + TypeScript arayüzü.
+- [x] Bonus: tam, değiştirilemez ürün sürüm geçmişi.
+- [x] Genişletilmiş uygulama kapsamı: migration, DTO, sınırlı yükleme, CORS, tutarlı
+  hatalar, otomatik arka uç/ön uç testleri, OpenAPI ve CI. Bunlar PDF’nin zorunlu
+  maddelerine ek uygulama kararlarıdır; bulut dağıtımı zorunlu değildir.
+- [x] Sonraki yerelleştirme isteği: varsayılan Türkçe, anlık TR/EN değişimi, kalıcı
+  seçim, tipli sözlükler, yerel biçimlendirme, iki dilli API/HTML ve Türkçe belgeler.
 
-## B. Schema and update rules
+## B. Şema ve güncelleme kuralları
 
-- **ProductModel**: integer PK, unique case-sensitive trimmed name. Model names are
-  shared identities; no mutable composition or manufacturing data is stored here.
-- **Batch**: integer PK, required model FK, unique GTIN text, batch number, cotton,
-  elastane, manufacturing location, carbon, version and UTC update timestamp.
-  `(ModelId, Number)` is unique: a model/batch identity cannot acquire another GTIN.
-- **ProductRevision**: integer PK, batch FK, unique `(BatchId, Version)`, immutable
-  full state including model name and UTC timestamp. Version 1 is stored on creation;
-  changed imports append version N+1 in the same transaction as the current state.
-- Fibers and manufacturing data belong to a batch: lots can have different recipes
-  and emissions. Changing the model name reassigns only this GTIN to the named model;
-  another batch is never rewritten. Models may remain after reassignment.
-- Identical normalized values are a no-op. Each row has its own transaction. Conflicts
-  reject that row, with no model or revision left behind. Duplicate GTINs within a file
-  are processed in order, using the same rules as subsequent imports.
-- SQLite stores decimals as invariant text to preserve decimal precision; validation
-  uses .NET decimal arithmetic, never floating point equality.
-- A shared presenter omits carbon entirely from consumer DTOs, HTML, JSON-LD and history.
+- **ProductModel**: tamsayı PK; kırpılmış, büyük/küçük harfe duyarlı benzersiz ad.
+  Model adları ortak kimliklerdir; değişken bileşim/üretim verisi burada tutulmaz.
+- **Batch**: tamsayı PK, zorunlu model FK, benzersiz metin GTIN, parti numarası,
+  pamuk, elastan, üretim yeri, karbon, sürüm ve UTC güncelleme zamanı.
+  `(ModelId, Number)` benzersizdir; aynı model/parti kimliği başka GTIN alamaz.
+- **ProductRevision**: tamsayı PK, batch FK, benzersiz `(BatchId, Version)`;
+  model adı ve UTC zamanı dâhil değiştirilemez tam durum. Oluşturulurken sürüm 1
+  saklanır; değişen yüklemeler güncel durumla aynı transaction içinde N+1 ekler.
+- Elyaf ve üretim verisi partiye aittir; reçete ve salım farklı olabilir. Model adı
+  değişince yalnızca o GTIN yeniden ilişkilendirilir; başka parti yazılmaz.
+  Yeniden ilişkilendirme sonrası model kalabilir.
+- Normalize edilmiş aynı değerler değişiklik sayılmaz. Her satırın ayrı
+  transaction işlemi vardır. Çakışma satırı reddeder; model/sürüm artığı bırakmaz.
+  Dosyada yinelenen GTIN’ler sonraki yüklemelerle aynı kurallarla sırayla işlenir.
+- SQLite ondalıkları kültürden bağımsız metin saklar. Doğrulama .NET `decimal`
+  aritmetiğidir; kayan nokta eşitliğine dayanmaz.
+- Ortak sunum bileşeni, tüketici DTO, HTML, JSON-LD ve geçmişten karbonu tamamen çıkarır.
 
-## C. Contracts and interface
+## C. Sözleşmeler ve arayüz
 
-| Method | Route | Contract |
+| Yöntem | Yol | Sözleşme |
 | --- | --- | --- |
 | POST | /api/import/csv | multipart `file`; total/imported/updated/unchanged/failed/errors |
-| GET | /api/products?q= | array of role-filtered passport DTOs; optional search |
-| GET | /api/products/{gtin} | passport DTO or 404 |
-| GET | /api/products/{gtin}/history | descending snapshot DTOs or 404 |
-| GET | /api/products/{gtin}/history/{version} | snapshot DTO or 404 |
-| GET | /dpp/{gtin} | accessible HTML or 404 |
-| GET | /dpp/{gtin}.jsonld | application/ld+json or 404 |
-| GET | /dpp/{gtin}/qr.png | PNG containing configured absolute consumer HTML URL |
+| GET | /api/products?q= | role göre süzülmüş DTO dizisi; isteğe bağlı arama |
+| GET | /api/products/{gtin} | pasaport DTO’su veya 404 |
+| GET | /api/products/{gtin}/history | azalan sürüm DTO’ları veya 404 |
+| GET | /api/products/{gtin}/history/{version} | sürüm DTO’su veya 404 |
+| GET | /dpp/{gtin} | erişilebilir HTML veya 404 |
+| GET | /dpp/{gtin}.jsonld | application/ld+json veya 404 |
+| GET | /dpp/{gtin}/qr.png | yapılandırılmış mutlak tüketici HTML URL’sini içeren PNG |
 
-Read routes support `?rol=yetkili` except QR (always consumer URL). Role responses
-are not cached. This parameter is a demo visibility switch, never authorization.
-Import/file failures use Problem Details, while independently rejected rows return
-a successful import report containing safe field errors and physical start lines.
+Okuma yolları QR dışında `?rol=yetkili` destekler; QR daima tüketici URL’sidir.
+Yanıtlar önbelleğe alınmaz. Bu parametre bir görünürlük demosudur; yetkilendirme
+sağlamaz. Dosya hataları Problem Details, bağımsız satır reddi ise güvenli alan
+hataları ve fiziksel başlangıç satırları içeren başarılı içe aktarma raporu döndürür.
 
-Pages: searchable product dashboard, dedicated upload view with retry and row errors,
-detail with composition, QR preview/download, output links, role switch and timeline.
-All pages have loading/error/empty states and responsive keyboard-accessible controls.
+Sayfalar: aranabilir ürün panosu; tekrar deneme ve satır hataları içeren yükleme;
+bileşim, QR önizleme/indirme, çıktı bağlantıları, rol anahtarı ve zaman çizelgesi
+olan ayrıntı görünümü. Yüklenme/hata/boş durumları ve duyarlı, klavyeyle
+kullanılabilir kontroller bulunur.
 
-## D. Structure
+## D. Dizin yapısı
 
 ```text
 backend/src/MiniDpp.{Domain,Application,Infrastructure,Api}/
 backend/tests/MiniDpp.Tests/
 frontend/{src,tests}/
+frontend/src/i18n/
+localization/
 samples/
 docs/
 .github/workflows/
 ```
 
-## E. Milestones and checkpoints
+## E. Aşamalar ve kontrol noktaları
 
-1. Initialize projects; verify dependency restoration and LTS SDK.
-2. Implement domain validation, database schema/migration, atomic CSV import.
-   Check exact sample outcome and repeat/change/conflict behavior.
-3. Add shared filtered DTOs, HTML, JSON-LD, QR, history and OpenAPI.
-   Check visibility leaks, consistency, 404s and decoded QR destination.
-4. Implement typed React UI; check upload/errors/role toggle and responsive styling.
-5. Run backend tests/build/format and frontend tests/typecheck/lint/build.
-6. Finish README, CI, requirement mapping and an accurate incremental history record.
+1. Projeleri oluşturma; bağımlılık geri yükleme ve LTS SDK doğrulaması.
+2. Etki alanı doğrulaması, şema/migration, atomik CSV aktarımı; örneğin tam sonucu
+   ile tekrar/değişiklik/çakışma davranışını kontrol etme.
+3. Ortak süzülmüş DTO, HTML, JSON-LD, QR, geçmiş ve OpenAPI; görünürlük sızıntısı,
+   tutarlılık, 404 ve çözümlenen QR hedefini doğrulama.
+4. Tipli React arayüzü; yükleme/hata/rol anahtarı ve duyarlı tasarımı doğrulama.
+5. Arka uç test/derleme/biçim ile ön uç test/tip/lint/derleme kontrollerini çalıştırma.
+6. README, CI, gereksinim eşlemesi ve gerçek artımlı geçmiş kaydını tamamlama.
+7. Sonraki TR/EN yerelleştirmesi; iş kurallarını değiştirmeden sunum katmanını ve
+   Türkçe belgeleri güncelleme, dil ve işlev regresyonlarını doğrulama.
 
-## F. Submission review status (2026-11-05)
+## F. Teslim incelemesi durumu — 2026-11-05
 
-All seven mandatory PDF requirements, the React + TypeScript advantage and the
-immutable version-history bonus were rechecked. The database architecture, API
-contracts and application source are preserved.
+Önceki teslim incelemesinde PDF’nin yedi zorunlu maddesi, React + TypeScript
+avantajı ve değiştirilemez geçmiş bonusu tekrar denetlenmiştir. İnceleme
+başlangıcındaki yayımlanmış taban
+`b5f86b8a022c3f88b189acac3abfd3fa1d8dd966` idi. İlk commit’i dokuz artımlı commit
+izler; gerçek başlıklar [COMMITS.md](COMMITS.md) içindedir. GitHub Actions
+[1 numaralı çalışma](https://github.com/GorkemErtas/mini-dpp-platform/actions/runs/41825678774)
+2026-11-04 tarihinde başarılı olmuştur; arka uç, ön uç ve tarayıcı işlerinin
+başarıları bu yerelleştirme sırasında GitHub aracıyla yeniden doğrulanmıştır.
 
-At review start, public `main` was verified at `b5f86b8a022c3f88b189acac3abfd3fa1d8dd966`.
-The initial commit is followed by nine real incremental commits; see
-[COMMITS.md](COMMITS.md). GitHub Actions
-[run #1](https://github.com/GorkemErtas/mini-dpp-platform/actions/runs/41825678774)
-completed successfully on 2026-11-04; backend, frontend and browser jobs all passed.
+Önceki temiz klon incelemesi, Windows’ta `core.autocrlf=true` nedeniyle CSV hash’inin
+ve kaynak satır sonlarının değiştiğini, iki biçim denetiminin bozulduğunu
+belgelemiştir. `.gitattributes`, LF kaynak dosyalarını ve özgün girdi baytlarını
+korumak için eklenmiştir. Klon dosyalarının bu kuralla yeniden oluşturulması özgün
+CSV hash’ini ve biçim denetimlerini düzeltmiştir. Ayrıntılar [REVIEW.md](REVIEW.md)
+içindedir. Sonraki düzeltme commit’i `c624a73`, mevcut yerel geçmişte doğrulanmıştır;
+yerelleştirme başlangıç HEAD’i `c624a7315c8af246643a52fa0cb033cdd3745a53` değeridir.
 
-A fresh public clone reproduced a Windows checkout defect: `core.autocrlf=true`
-changed the sample CSV hash and caused backend/frontend formatting checks to fail.
-The review adds `.gitattributes` to enforce LF source checkouts and preserve input
-bytes. Recreating the clone's files with those attributes restored the original
-CSV hash and passed both formatting checks. Full results and prioritized findings
-are in [REVIEW.md](REVIEW.md).
+PDF, örnek CSV’nin eklenmesine izin verir; değerlendirme PDF’sinin herkese açık
+dağıtımını açıkça ele almaz. Bu, önceki incelemede sahibine bırakılmış bir yayın
+kararıdır. PDF ve Git geçmişi bu çalışmada değiştirilmez. Önceki incelemenin
+başlangıçta commit edilmeden bırakılan düzeltmeleri, sonraki sahip onayıyla
+kaydedilmiştir. Yerelleştirme ilk istekte commit edilmeden incelemeye bırakılmıştır.
+Kullanıcının sonraki açık talebiyle backend/testler, frontend/testler ve Türkçe
+belgeler üç ayrı commit’e ayrılır ve mevcut `main` dalına gönderilir. Bu yetki
+önceki tarihsel onaydan değil, yeni kullanıcı talebinden gelir. Geçmiş yeniden
+yazımı, PDF kaldırma veya dağıtım yapılmaz. Uzak çalışmalar
+[GitHub Actions](https://github.com/GorkemErtas/mini-dpp-platform/actions) üzerinden izlenebilir.
 
-The PDF permits including the sample CSV but does not explicitly address public
-redistribution of the assessment PDF. Its public inclusion remains an owner
-decision; this review leaves the PDF and existing Git history unchanged. The review
-initially left its fixes unstaged and uncommitted; the owner subsequently authorized
-committing and pushing them. No history rewrite, PDF removal or deployment is
-included in that authorization. Later commit/run results are available in Git
-history and [GitHub Actions](https://github.com/GorkemErtas/mini-dpp-platform/actions).
+## G. Yerelleştirme uygulaması
+
+- `frontend/src/i18n/{en,tr}.ts`: merkezi anahtarlar; `tr` sözlüğü İngilizce sözlüğün
+  anahtar kümesini statik olarak karşılar. Testler boş metin ve yer tutucu farklarını yakalar.
+- `index.ts`: Türkçe varsayılanı, `localStorage`, sekmeler arası saklama olayı,
+  `useSyncExternalStore`, çeviri ve saklanan hata iletilerini yeniden sunma.
+- `LanguageSwitcher.tsx`: üst gezinmede TR/EN; görünür etkin durum, `aria-pressed`,
+  yerel dil adları, klavye desteği ve mobil dokunma hedefleri.
+- `localization/server-messages.json`: React/API ortak hata metinleri. API kaynağına
+  gömülür; dağıtımda haricî dosya okuma veya ön uç derlemesi gerektirmez.
+- `MiniDpp.Api/Localization.cs`: sunum sınırında satır/Problem Details çevirisi ve
+  HTML etiketleri. Etki alanı, CSV ayrıştırıcısı, günlükler ve veritabanı değişmez.
+- `Accept-Language`, API’nin temel seçimidir; eksik/desteklenmeyen dil Türkçedir.
+  `/dpp` için geçerli `lang=tr|en` başlıktan önce gelir. React’in HTML bağlantısı dili
+  taşır; bağımsız HTML dil bağlantıları demo rolünü korur.
+- Tarih/sayı sunumu `tr-TR` / `en-US` kullanır; UTC, JSON sayıları, GTIN, noktalı
+  CSV ayrıştırması ve JSON-LD kimlikleri korunur. QR daima rol içermeyen tüketici URL’sidir.
+- Türkçe belgelerde terminal komutları, yollar, JSON alanları, hash/SHA değerleri
+  ve özgün commit başlıkları korunur. Yeni paket veya migration eklenmez.
+
+Güncel komut sonuçları ve kapsam sınırları [REVIEW.md](REVIEW.md) içindedir.

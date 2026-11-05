@@ -1,13 +1,16 @@
-# Verified incremental commit history
+# Doğrulanmış artımlı commit geçmişi
 
-Verified on **2026-11-05** using local Git history, a fresh clone of the public
-repository and the GitHub branch/run APIs. At review start, public `main` and local
-HEAD both pointed to `b5f86b8a022c3f88b189acac3abfd3fa1d8dd966`.
+2026-11-05 tarihinde salt okunur yerel `git log --oneline --reverse` ve
+`git rev-parse HEAD` komutlarıyla mevcut geçmiş yeniden doğrulanmıştır. Yerelleştirme
+başlangıç HEAD’i **`c624a7315c8af246643a52fa0cb033cdd3745a53`** değeridir.
 
-The initial commit and nine subsequent incremental commits are already published.
-This is the observed history, in chronological order:
+Önceki teslim incelemesi, yerel geçmiş, temiz herkese açık klon ve GitHub dal/çalışma
+API’leri üzerinden yapılmış; o incelemenin başlangıcındaki `main` ve yerel HEAD
+**`b5f86b8a022c3f88b189acac3abfd3fa1d8dd966`** olarak kaydedilmiştir. İlk commit ve
+onu izleyen dokuz artımlı commit’in yayımlanmış olması bu tarihsel kaydın parçasıdır.
+Mevcut yerel geçmişte sonraki inceleme düzeltmesi de vardır:
 
-| Commit | Actual subject |
+| Commit | Özgün başlık |
 | --- | --- |
 | `9bb56db` | Initial commit |
 | `e12197a` | chore(repo): configure SDK tooling and repository conventions |
@@ -19,37 +22,53 @@ This is the observed history, in chronological order:
 | `34d1c01` | test(frontend): cover UI workflows and browser accessibility |
 | `07c69fd` | docs: document setup architecture and assessment acceptance |
 | `b5f86b8` | ci: add backend frontend and browser checks |
+| `c624a73` | fix(repo): preserve checkout bytes and correct review evidence |
+| `3a2fa4e` | feat(api): add Turkish and English passport localization |
+| `2eeddc1` | feat(frontend): add persistent Turkish and English language switching |
 
-Browse the [public commit history](https://github.com/GorkemErtas/mini-dpp-platform/commits/main/).
-The previous proposal to construct an incremental history is obsolete.
+[Herkese açık commit geçmişi](https://github.com/GorkemErtas/mini-dpp-platform/commits/main/)
+incelenebilir. Artımlı geçmişi sonradan oluşturmayı öneren eski plan geçersizdir;
+tabloda gerçek geçmiş vardır. SHA değerleri ve özgün Conventional Commit başlıkları
+çeviri sırasında değiştirilmemiştir.
 
-## Verified CI evidence
+## Doğrulanmış CI kanıtı
 
-[Build and test run #1](https://github.com/GorkemErtas/mini-dpp-platform/actions/runs/41825678774)
-was triggered by a push to `main` at the reviewed SHA on **2026-11-04**. It started
-at **12:01:19 UTC (15:01:19 Türkiye time)** and completed successfully by
-**12:02:32 UTC (15:02:32 Türkiye time)**, on attempt 1.
+[1 numaralı Build and test çalışması](https://github.com/GorkemErtas/mini-dpp-platform/actions/runs/41825678774),
+2026-11-04 tarihinde incelenen `b5f86b8` SHA’sı için `main` dalına gönderimle
+başlamıştır. Önceki inceleme kaydına göre 1. denemede **12:01:19 UTC (15:01:19
+Türkiye saati)** itibarıyla başlamış ve **12:02:32 UTC (15:02:32 Türkiye saati)**
+itibarıyla başarıyla tamamlanmıştır. İşler ve adımları 2026-11-05 yerelleştirmesi
+sırasında GitHub `fetch_workflow_run_jobs` aracıyla yeniden sorgulanmıştır:
 
-| Job | Verified result |
+| İş | Doğrulanmış sonuç |
 | --- | --- |
-| backend | Success: locked restore, Release build, formatting and xUnit tests |
-| frontend | Success: npm ci, typecheck, lint, formatting, Vitest and production build |
-| browser | Success: dependency setup, Chromium install and Playwright workflow |
+| backend | Başarılı: kilitli geri yükleme, Release derleme, biçim denetimi ve xUnit |
+| frontend | Başarılı: npm ci, tip denetimi, lint, biçim, Vitest ve üretim derlemesi |
+| browser | Başarılı: bağımlılık kurulumu, Chromium kurulumu ve Playwright akışı |
 
-This remote run covers the reviewed base SHA. Local results for the submission
-review fixes are in [REVIEW.md](REVIEW.md). Runs for subsequent commits are on the
-[Actions page](https://github.com/GorkemErtas/mini-dpp-platform/actions).
+Bu uzak sonuç yalnızca incelenen taban SHA’yı kapsar. `c624a73` veya yerelleştirme
+commit’leri için bu çalışmadan CI başarısı çıkarılamaz. Bu oturumda
+sonraki commit için ayrı uzak CI sonucu doğrulanmamıştır. Yerel sonuçlar
+[REVIEW.md](REVIEW.md), diğer uzak çalışmalar
+[Actions sayfasındadır](https://github.com/GorkemErtas/mini-dpp-platform/actions).
 
-## Current review changes
+## İnceleme ve mevcut değişiklikler
 
-The submission review corrects documentation and adds Git checkout attributes for
-reproducible Windows formatting and unchanged input bytes. Application source,
-database schema, API contracts, the PDF and existing Git history are unchanged.
-The review initially left its changes unstaged and uncommitted. The owner then
-explicitly authorized committing and pushing these fixes. The table above records
-the reviewed base history; the delivery commit appears in the public Git history.
+Önceki inceleme belgeleri düzeltmiş ve Windows’ta tekrarlanabilir biçimlendirme ile
+özgün girdi baytları için `.gitattributes` eklemiştir; uygulama kaynağını, şemayı,
+API sözleşmelerini, PDF’yi veya geçmişi değiştirmemiştir. Önce commit edilmeden
+bırakılan bu düzeltmeler, sonraki açık sahip onayıyla `c624a73` olarak kaydedilmiştir.
 
-Read-only inspection commands, from the repository root:
+Mevcut yerelleştirme React, HTTP/HTML sunumu, testler ve Türkçe belgeleri günceller.
+İlk istekte değişiklikler staging ve commit yapılmadan incelemeye bırakılmıştır.
+Kullanıcının sonraki açık “ayırarak commitle ve pushla” talebiyle backend ve ilgili
+testleri `3a2fa4e`, frontend ve ilgili testleri `2eeddc1` olarak kaydedilmiştir.
+Türkçe belgeler bunları izleyen ayrı `docs` commit’inde tutulur; bu belgenin kendi
+commit SHA’sı `git log` üzerinden görülebilir. Kullanıcı mevcut `main` dalına push
+işlemini de yetkilendirmiştir. Önceki commit’ler ve tarihleri değiştirilmez;
+reset, rebase, merge veya geçmiş yeniden yazımı yapılmaz.
+
+Depo kökünden salt okunur inceleme komutları:
 
 ```sh
 git status --short

@@ -1,39 +1,40 @@
 # Mini DPP
 
-A focused Digital Product Passport application for the ESG Next assessment. Upload
-a CSV, inspect validation errors, and share a product's HTML passport, schema.org
-JSON-LD or downloadable QR code. Includes both bonuses: a responsive React interface
-and immutable version history.
+ESG Next teknik değerlendirmesi için geliştirilmiş bir Dijital Ürün Pasaportu
+uygulamasıdır. CSV yükleyebilir, doğrulama hatalarını inceleyebilir ve ürünün HTML
+pasaportunu, schema.org JSON-LD verilerini veya indirilebilir QR kodunu
+paylaşabilirsiniz. İki bonus da uygulanmıştır: duyarlı React arayüzü ve
+değiştirilemez sürüm geçmişi. Arayüz ve kullanıcıya gösterilen API/HTML iletileri
+Türkçe ve İngilizcedir; ilk ziyarette varsayılan dil Türkçedir.
 
-The [original specification](docs/Mini_DPP_Teknik_Odev_ESG_Next.pdf) and
-[unchanged sample CSV](samples/urunler_duzeltilmis_test.csv) are included.
-See the [acceptance checklist and verification record](docs/REVIEW.md) and
-[verified incremental commit history](docs/COMMITS.md). The source PDF's public
-distribution is an outstanding owner decision; see [the review](docs/REVIEW.md).
+[Özgün şartname](docs/Mini_DPP_Teknik_Odev_ESG_Next.pdf) ve
+[değiştirilmemiş örnek CSV](samples/urunler_duzeltilmis_test.csv) depodadır.
+[Kabul listesi ve doğrulama kaydı](docs/REVIEW.md) ile
+[doğrulanmış commit geçmişini](docs/COMMITS.md) inceleyebilirsiniz. PDF’nin herkese
+açık dağıtımına ilişkin önceki inceleme notu [burada](docs/REVIEW.md) korunmuştur.
 
-## Quick start
+## Hızlı başlangıç
 
-Prerequisites: **.NET 10 LTS SDK**, **Node.js 24 or later** (24 LTS recommended), npm,
-and Git. No database server, account, secrets or cloud services are needed.
+Gereksinimler: **.NET 10 LTS SDK**, **Node.js 24 veya üzeri** (24 LTS önerilir), npm
+ve Git. Veritabanı sunucusu, hesap, gizli anahtar veya bulut hizmeti gerekmez.
 
-Clone the public repository:
+Herkese açık depoyu klonlayın:
 
 ```sh
 git clone https://github.com/GorkemErtas/mini-dpp-platform.git
 cd mini-dpp-platform
 ```
 
-.gitattributes keeps source checkouts at LF on Windows as well as Unix and preserves
-the supplied CSV/PDF bytes, including when Git has `core.autocrlf=true`.
-
-From the repository root, start the backend:
+`.gitattributes`, Windows ve Unix üzerinde LF satır sonlarını korur;
+`core.autocrlf=true` olsa bile sağlanan CSV/PDF dosyalarının baytları değişmez.
+Depo kökünden arka ucu başlatın:
 
 ```sh
 dotnet restore backend/MiniDpp.sln --locked-mode
 dotnet run --project backend/src/MiniDpp.Api
 ```
 
-In a second terminal:
+İkinci terminalde:
 
 ```sh
 cd frontend
@@ -41,39 +42,39 @@ npm ci
 npm run dev
 ```
 
-Open **http://localhost:5173**. API: http://localhost:5080.
-Swagger UI: http://localhost:5080/swagger (Development environment only).
-The backend applies checked-in EF Core migrations on startup and creates
-`backend/src/MiniDpp.Api/mini-dpp.db` when run using the command above.
+**http://localhost:5173** adresini açın. API: http://localhost:5080.
+Swagger UI: http://localhost:5080/swagger; yalnızca `Development` ortamında açıktır.
+Arka uç, depodaki EF Core migration dosyalarını başlangıçta uygular. Bu komutla
+çalıştırıldığında `backend/src/MiniDpp.Api/mini-dpp.db` oluşturulur.
 
-For this prepared Windows workspace, .NET 10 was installed under ignored `.tools/`
-because the system SDK is .NET 9. Run `. ./scripts/Use-WorkspaceDotnet.ps1` from
-the root in a PowerShell terminal before using the commands above. A fresh clone
-with the .NET 10 SDK installed does not need this helper or `.tools/`.
+Bu hazırlanmış Windows çalışma alanında sistem SDK’sı .NET 9 olduğu için .NET 10,
+yok sayılan `.tools/` altında kuruludur. PowerShell’de depo kökünden önce
+`. ./scripts/Use-WorkspaceDotnet.ps1` çalıştırın. .NET 10 SDK kurulu yeni bir klonda
+bu yardımcıya veya `.tools/` dizinine gerek yoktur.
 
-## Import the sample
+## Örnek veriyi içe aktarma
 
-1. Select **CSV import**, choose `samples/urunler_duzeltilmis_test.csv`, then
-   **Validate & import**. Drag and drop is also supported.
-2. The first import into an empty database returns **5 total, 3 imported, 0 updated,
-   0 unchanged, 2 rejected**.
-3. CSV **row 4** has no GTIN; **row 5** has fiber percentages totalling 98.
-   Header is row 1. Other valid records are saved.
-4. Open **Products**, search/filter the records, then open a passport. Use its
-   authorized demo switch, output links, QR download and version timeline.
-5. Repeat the same upload: **3 unchanged, 2 rejected**, with no new revisions.
+1. **CSV İçe Aktarma** sayfasında `samples/urunler_duzeltilmis_test.csv` dosyasını
+   seçip **Doğrula ve İçe Aktar** düğmesine basın. Sürükleyip bırakma desteklenir.
+2. Boş veritabanına ilk yükleme: **5 toplam, 3 içe aktarılan, 0 güncellenen,
+   0 değişmeyen, 2 reddedilen** satır.
+3. CSV’nin **4. satırında** GTIN yoktur; **5. satırında** elyaf yüzdelerinin toplamı
+   98’dir. Başlık 1. satırdır. Diğer geçerli kayıtlar kaydedilir.
+4. **Ürünler** sayfasında arama/filtreleme yapıp pasaport açın. Yetkili demo
+   anahtarını, çıktı bağlantılarını, QR indirmeyi ve sürüm zaman çizelgesini deneyin.
+5. Aynı dosyayı tekrar yükleyin: **3 değişmeyen, 2 reddedilen**; yeni sürüm oluşmaz.
 
-Successful GTINs: `08690000000012`, `08690000000029`, `08690000000050`.
-Never resave the sample through Excel: leading zeros may be lost. Its SHA-256 is
+Başarılı GTIN’ler: `08690000000012`, `08690000000029`, `08690000000050`.
+Örneği Excel’de yeniden kaydetmeyin; baştaki sıfırlar kaybolabilir. SHA-256:
 `A3C4189EA0EDB327A0E2EB67B6FEEBE0DF0370A96162B476C91285B458E7A107`.
 
-Command-line upload (use `curl.exe` instead of `curl` in Windows PowerShell):
+Komut satırından yükleme; Windows PowerShell’de `curl` yerine `curl.exe` kullanın:
 
 ```sh
 curl -F "file=@samples/urunler_duzeltilmis_test.csv" http://localhost:5080/api/import/csv
 ```
 
-Response, abbreviated only within each row's error list:
+Her satırın hata listesi kısaltılmış örnek yanıt:
 
 ```json
 {
@@ -83,103 +84,146 @@ Response, abbreviated only within each row's error list:
   "unchanged": 0,
   "failed": 2,
   "errors": [
-    { "row": 4, "errors": [{ "field": "gtin", "message": "GTIN must contain exactly 14 ASCII digits with a valid GS1 check digit." }] },
-    { "row": 5, "errors": [{ "field": "composition", "message": "Cotton and elastane percentages must sum to 100." }] }
+    { "row": 4, "errors": [{ "field": "gtin", "message": "GTIN, geçerli bir GS1 kontrol basamağı içeren tam 14 ASCII rakamından oluşmalıdır." }] },
+    { "row": 5, "errors": [{ "field": "composition", "message": "Pamuk ve elastan yüzdelerinin toplamı 100 olmalıdır." }] }
   ]
 }
 ```
 
-## Architecture and data model
+## Dil seçimi ve yerelleştirme
 
-ASP.NET Core minimal endpoints delegate to small application services. Domain
-validation has no framework dependency. Infrastructure contains CsvHelper, EF Core
-and SQLite. DTOs are distinct from entities; no generic repository or global frontend
-state framework is needed. React 19, TypeScript and Vite use a typed fetch client;
-QRCoder generates PNGs; Swashbuckle provides OpenAPI.
+Üst gezinmedeki **TR | EN** düğmeleri dili sayfa yenilemeden değiştirir. Etkin dil
+`aria-pressed` ile belirtilir. Düğmeler klavye ile kullanılabilir; dokunma alanları
+en az 44 × 44 CSS pikseldir. Seçim, `localStorage` içindeki `mini-dpp-language`
+anahtarında saklanır; gezinme ve yenilemede korunur. Saklama engellenirse dil
+değiştirme yine çalışır. `html lang`, sayfa başlığı/açıklaması, erişilebilirlik
+metinleri ve durum iletileri güncellenir.
+
+`frontend/src/i18n/en.ts` ve `tr.ts` merkezi, tipli arayüz sözlükleridir. TypeScript
+eksik/yanlış anahtarları, testler de yer tutucu eşleşmelerini denetler. `index.ts`,
+React’in `useSyncExternalStore` işleviyle aboneliği ve kalıcılığı yönetir; ek paket
+yoktur. Tarihler UTC korunarak `tr-TR` / `en-US`, sayılar `Intl` ile biçimlendirilir.
+GTIN, kullanıcı verisi ve depolanan sayılar değişmez. CSV ondalık ayırıcısı her iki
+dilde de **nokta**dır.
+
+Her React API isteği güncel `Accept-Language: tr` veya `en` başlığını gönderir.
+Başlık yoksa veya desteklenen dil bulunmazsa varsayılan Türkçedir. Bölgesel dil
+eşleştirmesi ve kalite ağırlıkları desteklenir; yanıtta `Content-Language` bulunur.
+`localization/server-messages.json`, API ile React’in ortak hata sözlüğüdür ve API
+derlemesine gömülür. Doğrulama ve istisna metinleri yalnızca HTTP sunumunda çevrilir;
+iş kuralları ve günlükler korunur. Ekranda tutulan içe aktarma hataları dil değişince
+yeniden çevrilir; dosya yeniden gönderilmez.
+
+Bağımsız HTML pasaportu **`?lang=tr` / `?lang=en`** destekler. Geçerli `lang`, yalnızca
+`/dpp` yollarında başlıktan önceliklidir; sonra `Accept-Language` ve Türkçe varsayılanı
+uygulanır. React’in HTML bağlantısı seçili dili taşır. HTML’deki Türkçe/English
+bağlantıları demo rolünü korur. Doğrudan tarayıcı gezintisi de çalışır; sunucu
+React’in `localStorage` değerini okuyamaz.
+
+```sh
+curl -H "Accept-Language: en" -F "file=@samples/urunler_duzeltilmis_test.csv" http://localhost:5080/api/import/csv
+curl "http://localhost:5080/dpp/08690000000012?lang=tr"
+curl "http://localhost:5080/dpp/08690000000012?lang=en&rol=yetkili"
+```
+
+JSON alanları, CSV sütunları, API yolları, `rol=yetkili`, schema.org sözlüğü ve
+JSON-LD `PropertyValue` adları sabittir. QR, her dilde aynı tüketici URL’sidir;
+hedefine `lang` veya yetkili rolü eklenmez. QR ile açılan HTML, tarayıcının
+`Accept-Language` başlığını veya Türkçe varsayılanını kullanır. Swagger/OpenAPI’nin
+geliştiriciye yönelik teknik açıklamaları ve özgün ürün verileri çevrilmez.
+
+## Mimari ve veri modeli
+
+ASP.NET Core minimal uç noktaları küçük uygulama servislerine yönlendirir. Etki
+alanı doğrulaması framework bağımlılığı içermez. Altyapıda CsvHelper, EF Core ve
+SQLite bulunur. DTO’lar varlıklardan ayrıdır; genel amaçlı repository veya küresel
+ön uç durum yönetim framework’ü gerekmez. React 19, TypeScript ve Vite tipli fetch
+istemcisi kullanır; QRCoder PNG, Swashbuckle OpenAPI üretir.
 
 ```mermaid
 flowchart LR
-  UI[React + TypeScript] -->|CSV / product / history API| API[ASP.NET Core API]
-  CSV[CsvHelper] --> Validation[Domain validation]
+  UI[React + TypeScript] -->|CSV / ürün / geçmiş API| API[ASP.NET Core API]
+  CSV[CsvHelper] --> Validation[Etki alanı doğrulaması]
   API --> CSV
-  Validation --> Import[Row transaction + revision]
+  Validation --> Import[Satır işlemi + sürüm]
   Import --> DB[(SQLite / EF Core)]
-  DB --> Reader[Product reader]
-  Reader --> Presenter[Shared visibility presenter]
+  DB --> Reader[Ürün okuyucu]
+  Reader --> Presenter[Ortak görünürlük sunum bileşeni]
   Presenter --> API
-  Presenter --> HTML[HTML passport]
+  Presenter --> HTML[HTML pasaportu]
   Presenter --> LD[Schema.org JSON-LD]
-  API --> QR[QR PNG / configured public URL]
+  API --> QR[QR PNG / yapılandırılmış genel URL]
 ```
 
-| Table | Identity and responsibility |
+| Tablo | Kimlik ve sorumluluk |
 | --- | --- |
-| Models | Integer PK; unique trimmed, case-sensitive model name |
-| Batches | Model FK; unique GTIN **text**; unique `(ModelId, Number)`; composition, location, carbon, current version, UTC timestamp |
-| Revisions | Batch FK; unique `(BatchId, Version)`; complete immutable state including the model name and UTC timestamp |
+| Models | Tamsayı PK; kırpılmış, büyük/küçük harfe duyarlı benzersiz model adı |
+| Batches | Model FK; benzersiz **metin** GTIN; benzersiz `(ModelId, Number)`; bileşim, yer, karbon, güncel sürüm, UTC zamanı |
+| Revisions | Batch FK; benzersiz `(BatchId, Version)`; model adı ve UTC zamanı dâhil tam, değiştirilemez durum |
 
-**Composition belongs to the batch**, as do production location and carbon: two
-lots of the same model can have different recipes or manufacturing footprints.
-Model names are shared identities. Importing a changed name reassigns only that
-GTIN to the named model; it never renames another batch's model. A model can remain
-unreferenced after reassignment. A model/batch pair already assigned to another
-GTIN is rejected rather than silently merged or overwritten.
+**Bileşim partiye aittir**; üretim yeri ve karbon da öyledir. Aynı modelin iki
+partisinde farklı reçete ve üretim ayak izi bulunabilir. Model adları ortak
+kimliklerdir. Adı değişen kaydın içe aktarılması yalnızca o GTIN’i ilgili modele
+bağlar; başka partinin modelini yeniden adlandırmaz. Sonrasında referanssız model
+kalabilir. Başka GTIN’e atanmış model/parti çifti sessizce birleştirilmez veya üzerine
+yazılmaz; satır reddedilir.
 
-Decimals are validated and compared using C# `decimal`; SQLite stores them as
-invariant text to retain exact precision. Foreign keys, unique indexes, a version
-concurrency token and GTIN/version check constraints reinforce application rules.
+Ondalıklar C# `decimal` ile doğrulanıp karşılaştırılır. SQLite, tam hassasiyeti
+korumak için kültürden bağımsız metin saklar. Yabancı anahtarlar, benzersiz indeksler,
+sürüm eş zamanlılık belirteci ve GTIN/sürüm kontrol kısıtları kuralları destekler.
 
-## Import and version semantics
+## İçe aktarma ve sürüm kuralları
 
-- Input is comma-delimited **UTF-8**, with optional BOM. Required column names are
-  exactly those in the sample; order may vary and extra unique columns are ignored.
-- Text is trimmed. GTIN needs 14 ASCII digits and a GS1 Mod-10 check digit. Cotton
-  and elastane each lie in [0,100] and sum to exactly 100. Carbon is nonnegative.
-  Decimal separator is a dot; grouping separators and exponent notation are rejected.
-- Blank physical lines are skipped but counted for error numbering. Quoted commas
-  and multiline fields work; errors report the record's **starting physical line**.
-  A delimiter-only record is a data row and is rejected by validation.
-- Limits: **2 MiB**, **10,000 data rows**, **4,096 characters per parsed field**,
-  200 characters for required descriptive text. Empty uploads, missing/duplicate
-  headers, invalid encoding and parser resource-limit failures return Problem Details
-  before writes. Recoverable malformed rows are rejected independently.
-- Each valid row has one transaction spanning model, batch and revision. An invalid
-  row or persistence conflict leaves no partial entities; subsequent rows continue.
-  A fatal I/O/database error can stop a file after earlier committed rows. The error
-  explains that an idempotent retry is safe. Cancellation rolls back the active row.
-- GTIN is the update key. Normalized, identical values count as **unchanged**,
-  including numerically equivalent decimals such as `12.4` and `12.40`.
-  Repeated GTINs in one file are processed sequentially using the same rules.
-- New GTINs get **version 1** and a snapshot. Each real change appends **N+1** and
-  updates the current row in the same transaction. Older snapshots already contain
-  the full prior state. Timestamps are UTC. Revision modification/deletion is blocked
-  by the context; raw database administration is outside this application's boundary.
+- Girdi virgülle ayrılmış **UTF-8** CSV’dir; BOM isteğe bağlıdır. Zorunlu sütun adları
+  örnektekiyle aynıdır. Sıra değişebilir; ek benzersiz sütunlar yok sayılır.
+- Metinler kırpılır. GTIN 14 ASCII rakamı ve GS1 Mod-10 kontrol basamağı gerektirir.
+  Pamuk/elastan ayrı ayrı [0,100] aralığında ve toplam tam 100 olmalıdır. Karbon
+  negatif olamaz. Ondalık ayırıcı noktadır; binlik ayırıcı ve üstel gösterim reddedilir.
+- Boş fiziksel satırlar atlanır; hata numarasında sayılır. Tırnaklı virgül ve çok
+  satırlı alanlar desteklenir. Hata, kaydın **başladığı fiziksel satırı** gösterir.
+  Yalnızca ayırıcılardan oluşan kayıt veri satırıdır ve doğrulamada reddedilir.
+- Sınırlar: **2 MiB**, **10.000 veri satırı**, alan başına **4.096 karakter**, zorunlu
+  açıklama metninde 200 karakter. Boş dosya, eksik/yinelenen başlık, geçersiz kodlama
+  ve ayrıştırıcı kaynak sınırı hataları yazma öncesinde Problem Details döndürür.
+  Kurtarılabilir hatalı satırlar bağımsız reddedilir.
+- Her geçerli satırda model, parti ve sürümü kapsayan tek transaction vardır.
+  Geçersiz satır veya kalıcılık çakışması kısmi varlık bırakmaz; sonraki satırlar
+  sürer. Ölümcül G/Ç veya veritabanı hatası önceden kaydedilmiş satırlardan sonra
+  dosyayı durdurabilir. Hata, idempotent tekrarın güvenli olduğunu açıklar. İptal,
+  etkin satır işlemini geri alır.
+- Güncelleme anahtarı GTIN’dir. Normalize edilmiş aynı değerler **değişmeyen**
+  sayılır; `12.4` ve `12.40` gibi sayısal eşdeğerler buna dâhildir. Dosya içindeki
+  yinelenen GTIN’ler aynı kurallarla sırayla işlenir.
+- Yeni GTIN, **sürüm 1** ve tam durum kaydı alır. Gerçek değişiklik, **N+1** sürümünü
+  ekleyip güncel satırı aynı transaction içinde değiştirir. Eski kayıtlar önceki
+  tam durumu içerir. Zamanlar UTC’dir. Context, geçmiş kayıtların değiştirilmesini
+  ve silinmesini engeller; doğrudan veritabanı yönetimi uygulama sınırının dışındadır.
 
-## API and examples
+## API ve örnekler
 
-| Method | Endpoint | Result |
+| Yöntem | Uç nokta | Sonuç |
 | --- | --- | --- |
-| POST | `/api/import/csv` | Multipart `file`; independent-row import report |
-| GET | `/api/products?q=denim` | Search model, GTIN, batch or location |
-| GET | `/api/products/{gtin}` | Current filtered passport DTO |
-| GET | `/api/products/{gtin}/history` | Filtered snapshots, newest first |
-| GET | `/api/products/{gtin}/history/{version}` | One filtered snapshot |
-| GET | `/dpp/{gtin}` | Human-readable HTML passport |
+| POST | `/api/import/csv` | Multipart `file`; bağımsız satırlı içe aktarma raporu |
+| GET | `/api/products?q=denim` | Model, GTIN, parti veya yer araması |
+| GET | `/api/products/{gtin}` | Süzülmüş güncel pasaport DTO’su |
+| GET | `/api/products/{gtin}/history` | En yeni önce olacak şekilde süzülmüş sürümler |
+| GET | `/api/products/{gtin}/history/{version}` | Tek, süzülmüş sürüm |
+| GET | `/dpp/{gtin}` | İnsan tarafından okunabilir HTML pasaportu |
 | GET | `/dpp/{gtin}.jsonld` | `application/ld+json`, schema.org Product |
-| GET | `/dpp/{gtin}/qr.png` | Decodable `image/png` pointing to the consumer HTML URL |
+| GET | `/dpp/{gtin}/qr.png` | Tüketici HTML URL’sine yönlenen, çözümlenebilir `image/png` |
 
-Unknown products/versions return **404**. File-level validation returns **400**;
-oversized files **413**; a non-multipart media type **415**. Row rejection is reported
-inside the **200** partial-success report. Unexpected failures return safe **500**
-Problem Details without stack traces or configuration. OpenAPI describes the routes,
-query parameters, multipart upload and product/history schemas.
+Bilinmeyen ürün/sürüm **404**, dosya doğrulaması **400**, fazla büyük dosya **413**,
+multipart olmayan içerik türü **415** döndürür. Reddedilen satırlar **200** kısmi
+başarı raporundadır. Beklenmeyen hatalar yığın izi veya yapılandırma içermeyen
+güvenli **500** Problem Details yanıtlarıdır. OpenAPI; yolları, sorgu parametrelerini,
+multipart yüklemeyi ve ürün/geçmiş şemalarını açıklar.
 
 ```sh
 curl http://localhost:5080/api/products/08690000000012
 curl "http://localhost:5080/api/products/08690000000012/history?rol=yetkili"
 ```
 
-Consumer DTO (timestamp varies):
+Tüketici DTO’su; zaman damgası değişebilir:
 
 ```json
 {
@@ -194,67 +238,70 @@ Consumer DTO (timestamp varies):
 }
 ```
 
-Try these while both development servers run:
+İki geliştirme sunucusu da çalışırken deneyin:
 
 - HTML: http://localhost:5173/dpp/08690000000012
+- Türkçe HTML: http://localhost:5173/dpp/08690000000012?lang=tr
+- İngilizce HTML: http://localhost:5173/dpp/08690000000012?lang=en
 - JSON-LD: http://localhost:5173/dpp/08690000000012.jsonld
 - QR: http://localhost:5173/dpp/08690000000012/qr.png
-- Authorized HTML: http://localhost:5173/dpp/08690000000012?rol=yetkili
-- Authorized JSON-LD: http://localhost:5173/dpp/08690000000012.jsonld?rol=yetkili
+- Yetkili HTML: http://localhost:5173/dpp/08690000000012?rol=yetkili
+- Yetkili JSON-LD: http://localhost:5173/dpp/08690000000012.jsonld?rol=yetkili
 
-JSON-LD uses [schema.org/Product](https://schema.org/Product) and
-`additionalProperty` / `PropertyValue` for batch, percentages, location, version and
-authorized carbon, with `unitText` where applicable. It invents no schema.org fields.
+JSON-LD, [schema.org/Product](https://schema.org/Product) ile parti, yüzdeler, yer,
+sürüm ve yetkili karbon için `additionalProperty` / `PropertyValue` kullanır.
+Uygun alanlarda `unitText` bulunur; yeni schema.org alanı uydurulmaz.
 
-## Demo visibility and configuration
+## Demo görünürlüğü ve yapılandırma
 
-**`?rol=yetkili` is NOT real authorization.** Anyone can supply it. The assessment
-excludes authentication; this application must not protect real sensitive records.
-The shared presenter removes the carbon value entirely from consumer HTML,
-JSON-LD, product APIs and historical snapshots. Consumer API objects omit
-`carbonKgCo2e` rather than returning null. Authorized responses include it.
-Switching roles discards previous React data and refetches both product and history.
-Responses use `Cache-Control: no-store`. QR codes always encode a consumer URL.
+**`?rol=yetkili` gerçek yetkilendirme DEĞİLDİR.** Herkes ekleyebilir. Değerlendirme
+kimlik doğrulamayı kapsam dışı bırakır; gerçek hassas kayıtları korumak için
+kullanılmamalıdır. Ortak sunum bileşeni, karbonu tüketici HTML, JSON-LD, ürün API’si ve
+geçmişten tamamen çıkarır. Tüketici nesnesinde `carbonKgCo2e` null olarak dönmez;
+alan yoktur. Yetkili yanıtta bulunur. Rol değişince React önceki veriyi atar, ürün
+ve geçmişi yeniden getirir. Yanıtlar `Cache-Control: no-store` kullanır. QR daima
+tüketici URL’sini kodlar.
 
-Safe defaults live in `backend/src/MiniDpp.Api/appsettings.json`. ASP.NET environment
-variables override them; `.env.example` files are references, not automatically loaded.
+Varsayılanlar `backend/src/MiniDpp.Api/appsettings.json` içindedir. ASP.NET ortam
+değişkenleri bunları geçersiz kılar. `.env.example` dosyaları otomatik yüklenmez.
 
-| Variable | Default / purpose |
+| Değişken | Varsayılan / amaç |
 | --- | --- |
-| `PublicBaseUrl` | `http://localhost:5173`; trusted absolute HTTP(S) base for QR/HTML/JSON-LD links |
-| `ConnectionStrings__Dpp` | Local SQLite file; foreign keys enabled |
-| `CorsOrigins__0` | `http://localhost:5173`; explicitly allowed browser origin |
-| `AllowedHosts` | `localhost;127.0.0.1`; configure explicitly for other hosts |
-| `ASPNETCORE_URLS` | `http://localhost:5080` in the development launch profile |
+| `PublicBaseUrl` | `http://localhost:5173`; QR/HTML/JSON-LD için güvenilir mutlak HTTP(S) tabanı |
+| `ConnectionStrings__Dpp` | Yerel SQLite dosyası; yabancı anahtarlar etkin |
+| `CorsOrigins__0` | `http://localhost:5173`; açıkça izin verilen tarayıcı kaynağı |
+| `AllowedHosts` | `localhost;127.0.0.1`; diğer sunucu adları için açıkça yapılandırın |
+| `ASPNETCORE_URLS` | Geliştirme başlatma profilinde `http://localhost:5080` |
 
-Vite proxies `/api`, `/dpp` and `/swagger` to port 5080. Thus all output links work
-through port 5173. If running **only the backend**, set `PublicBaseUrl` to
-`http://localhost:5080`. QR generation never derives its URL from request Host or
-forwarded headers. A phone requires a reachable LAN address and corresponding
-listener/origin/host configuration; `localhost` on a phone refers to that phone.
+Vite, `/api`, `/dpp` ve `/swagger` yollarını 5080’e vekiller; çıktı bağlantıları
+5173 üzerinden çalışır. **Yalnızca arka uç** çalışıyorsa `PublicBaseUrl` değerini
+`http://localhost:5080` yapın. QR URL’si isteğin Host veya yönlendirme başlıklarından
+üretilmez. Telefon için erişilebilir LAN adresi ile uygun dinleyici/kaynak/sunucu
+adı ayarı gerekir; telefondaki `localhost`, telefonun kendisidir.
 
-## Database migrations
+## Veritabanı migration işlemleri
 
-Startup applies migrations automatically for this local assessment. To apply manually,
-from the root:
+Yerel değerlendirmede migration işlemleri başlangıçta otomatik uygulanır.
+Depo kökünden elle uygulamak için:
 
 ```sh
 dotnet tool restore
 dotnet ef database update --project backend/src/MiniDpp.Infrastructure --startup-project backend/src/MiniDpp.Api
 ```
 
-To evolve the schema, edit the model then create a real migration:
+Şemayı geliştirmek için modeli düzenleyip gerçek bir migration oluşturun:
 
 ```sh
 dotnet ef migrations add DescribeChange --project backend/src/MiniDpp.Infrastructure --startup-project backend/src/MiniDpp.Api --output-dir Migrations
 ```
 
-For a fresh demo, stop the API and delete **only** its local `mini-dpp.db` and matching
-`mini-dpp.db-wal` / `mini-dpp.db-shm` files. Restart to recreate the schema.
+Sıfırdan demo için API’yi durdurun; **yalnızca** yerel `mini-dpp.db` ve eşleşen
+`mini-dpp.db-wal` / `mini-dpp.db-shm` dosyalarını silin. Yeniden başlayınca şema oluşur.
+Yerelleştirme için şema değişikliği veya yeni migration eklenmemiştir.
 
-## Tests and checks
+## Testler ve kontroller
 
-From the root:
+Depo kökünden:
 
 ```sh
 dotnet restore backend/MiniDpp.sln --locked-mode
@@ -263,7 +310,7 @@ dotnet test backend/MiniDpp.sln --no-build --configuration Release
 dotnet format backend/MiniDpp.sln --no-restore --verify-no-changes
 ```
 
-From `frontend/`:
+`frontend/` içinden:
 
 ```sh
 npm ci
@@ -276,60 +323,71 @@ npx playwright install chromium
 npm run test:e2e
 ```
 
-xUnit uses WebApplicationFactory with isolated real SQLite files and real migrations.
-Tests cover the supplied sample, GS1, boundaries, decimals, malformed input, relational
-integrity, injected snapshot failure/rollback, idempotency, revisions, all visibility
-surfaces, HTML escaping, CORS, OpenAPI, 404s, and PNG decoding with ZXing.
-Vitest/Testing Library cover importing, row errors, retry, loading, filtering and role
-changes. Playwright drives the real API/UI, checks desktop/mobile layouts, scans
-WCAG A/AA rules with axe, and validates passport links and response types.
+xUnit, WebApplicationFactory ile yalıtılmış gerçek SQLite dosyalarını ve migration
+işlemlerini kullanır. Örnek, GS1, sınırlar, ondalıklar, hatalı girdiler, ilişkisel
+bütünlük, zorlanan sürüm hatası/geri alma, idempotent davranış, sürümler, tüm
+görünürlük yüzeyleri, HTML kaçışları, CORS, OpenAPI, 404 ve ZXing ile PNG çözümleme
+kapsanır. Yerelleştirme testleri varsayılan/başlık/sorgu seçimini, iki dilde doğrulama
+ve güvenli hataları, doğrudan HTML’i ve verinin değişmemesini denetler.
 
-Playwright starts both servers with an isolated temporary database when ports are
-free. Outside CI it can reuse already running local servers, in which case its sample
-import affects that local demo database. Stop both servers to test a fresh start.
-GitHub Actions runs backend, frontend and browser jobs. At the **2026-11-05** review
-start, public `main` pointed to `b5f86b8a022c3f88b189acac3abfd3fa1d8dd966`, and
-[Build and test run #1](https://github.com/GorkemErtas/mini-dpp-platform/actions/runs/41825678774)
-completed successfully on **2026-11-04**, with all three jobs passing. That run
-covers that published commit. The documentation and checkout fixes were checked
-locally. For later commits, check the corresponding run on the
-[Actions page](https://github.com/GorkemErtas/mini-dpp-platform/actions).
+Vitest/Testing Library; yükleme, satır hataları, tekrar deneme, yüklenme, filtreler,
+rol değişimi, sözlük tamlığı, kalıcılık, gezinme, tarih/sayı biçimleri ve klavyeyle
+dil seçimini sınar. Playwright gerçek API/arayüzü sürer; masaüstü/mobil taşma, axe
+WCAG A/AA, çıktı bağlantıları, yanıt türleri ve yenileme sonrası dil kalıcılığını
+denetler. Node 26’nın yerel `localStorage` özelliği DOM testlerinde jsdom’un
+tarayıcı depolamasıyla değiştirilir.
 
-## Repository layout
+Portlar boşsa Playwright iki sunucuyu ve yalıtılmış geçici veritabanını başlatır.
+CI dışında açık sunucuları tekrar kullanabilir; örnek yükleme o demo veritabanını
+etkiler. Temiz başlangıç için iki sunucuyu durdurun. GitHub Actions arka uç, ön uç
+ve tarayıcı işleri içerir. Önceden yayımlanan
+`b5f86b8a022c3f88b189acac3abfd3fa1d8dd966` için
+[1 numaralı çalışma](https://github.com/GorkemErtas/mini-dpp-platform/actions/runs/41825678774)
+başarılıdır; üç işin sonucu 2026-11-05 tarihinde GitHub aracıyla yeniden
+doğrulanmıştır. Bu sonuç yerel yerelleştirme değişikliklerini kapsamaz. Güncel yerel
+sonuçlar [REVIEW.md](docs/REVIEW.md), diğer uzak çalışmalar
+[Actions sayfasındadır](https://github.com/GorkemErtas/mini-dpp-platform/actions).
+
+## Depo düzeni
 
 ```text
 backend/
-  src/MiniDpp.Domain/          # Entities and framework-free validation
-  src/MiniDpp.Application/     # Contracts, importer/reader ports, visibility presenter
-  src/MiniDpp.Infrastructure/  # EF Core, migrations, CsvHelper, transactions
-  src/MiniDpp.Api/             # HTTP endpoints, HTML/JSON-LD/QR, OpenAPI
-  tests/MiniDpp.Tests/         # xUnit unit + HTTP/SQLite integration tests
+  src/MiniDpp.Domain/          # Varlıklar ve framework bağımsız doğrulama
+  src/MiniDpp.Application/     # Sözleşmeler, içe aktarma/okuma arayüzleri, görünürlük
+  src/MiniDpp.Infrastructure/  # EF Core, migration, CsvHelper, transaction işlemleri
+  src/MiniDpp.Api/             # HTTP, yerelleştirme, HTML/JSON-LD/QR, OpenAPI
+  tests/MiniDpp.Tests/         # xUnit birim ve HTTP/SQLite bütünleştirme testleri
 frontend/
-  src/                        # Typed client, views, reusable UI and CSS
-  tests/                      # Vitest/Testing Library and Playwright
-samples/                      # Original unmodified CSV
-docs/                         # Original PDF, plan, acceptance and verified history
-scripts/                      # Optional local SDK helper
+  src/                        # Tipli istemci, görünümler, ortak arayüz ve CSS
+  src/i18n/                   # Tipli Türkçe/İngilizce sözlükler ve dil durumu
+  tests/                      # Vitest/Testing Library ve Playwright
+localization/                 # API ile React’in ortak kullanıcı hataları
+samples/                      # Özgün, değiştirilmemiş CSV
+docs/                         # Özgün PDF, plan, kabul kaydı ve doğrulanmış geçmiş
+scripts/                      # İsteğe bağlı yerel SDK yardımcısı
 .github/workflows/ci.yml
 ```
 
-## Trade-offs and limitations
+## Tercihler ve sınırlamalar
 
-- This is a local assessment app with no accounts, deployment, CSV export or cloud
-  dependencies. Consumers have no write protection; CORS is not authorization.
-- Model-name matching is trimmed and case-sensitive. GTIN represents one product
-  batch in the supplied specification, not a broader cross-lot trade-item catalogue.
-- SQLite is appropriate for this small workload. Concurrent import conflicts are
-  rejected safely and can be retried; high-volume ingestion, distributed writers,
-  pagination and database-side decimal analytics would need a different design.
-- An unclosed quoted field can consume subsequent physical lines. Safe resynchronizing
-  is ambiguous; it is rejected as one malformed logical record rather than guessing.
-- Carbon validation errors identify fields/rules without echoing the source value.
-  This is demo filtering, not a full data-classification or audit platform.
-- Production serving of built React assets and reverse-proxy operations are outside
-  the assessment. `npm run build` produces `frontend/dist`; the documented development
-  proxy is the complete supported local setup. Docker was deliberately omitted.
+- Yerel değerlendirme uygulamasıdır; hesaplar, dağıtım, CSV dışa aktarma ve bulut
+  bağımlılıkları yoktur. Tüketici yazma koruması bulunmaz; CORS yetkilendirme değildir.
+- Model adları kırpılır, büyük/küçük harfe duyarlıdır. Verilen şartnamede GTIN tek
+  ürün partisini temsil eder; partiler üstü geniş bir ticari ürün kataloğunu değil.
+- SQLite küçük yük için uygundur. Eş zamanlı çakışmalar güvenle reddedilip yeniden
+  denenebilir. Yoğun aktarım, dağıtık yazıcılar, sayfalama ve veritabanında ondalık
+  analizi farklı tasarım gerektirir.
+- Kapatılmamış tırnaklı alan sonraki fiziksel satırları tüketebilir. Güvenli yeniden
+  eşleme belirsizdir; tahmin yerine tek hatalı mantıksal kayıt olarak reddedilir.
+- Karbon doğrulaması kaynak değeri tekrar etmeden alanı/kuralı belirtir. Demo
+  süzmesidir; kapsamlı veri sınıflandırma veya denetim platformu değildir.
+- Derlenmiş React dosyalarını üretimde sunma ve ters vekil işletimi kapsam dışıdır.
+  `npm run build`, `frontend/dist` üretir. Belgelenen geliştirme vekili desteklenen
+  tam yerel kurulumdur. Docker bilinçli olarak eklenmemiştir.
 
-The reviewed base contains the initial commit and nine incremental implementation,
-test, documentation and CI commits, recorded in [docs/COMMITS.md](docs/COMMITS.md).
-After the review, the owner authorized committing and pushing the review fixes.
+Yerel başlangıç HEAD’i `c624a7315c8af246643a52fa0cb033cdd3745a53` olarak doğrulanmıştır.
+Başlangıç commit’i, dokuz uygulama/test/belge/CI commit’i ve inceleme düzeltmesi
+[docs/COMMITS.md](docs/COMMITS.md) içindedir. Yerelleştirme başlangıçta inceleme için
+commit edilmeden bırakılmış; kullanıcının sonraki açık talebiyle backend ve ilgili
+testleri, frontend ve ilgili testleri, Türkçe belgeler olarak ayrı commit’lere
+ayrılmıştır. Önceki commit’ler ve tarihleri değiştirilmemiştir.

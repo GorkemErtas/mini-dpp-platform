@@ -1,178 +1,292 @@
-# Final submission-readiness review
+# Teslime hazırlık incelemesi ve yerelleştirme doğrulaması
 
-Reviewed on **2026-11-05** against both pages of
-`Mini_DPP_Teknik_Odev_ESG_Next.pdf` and the supplied CSV. The expanded implementation
-brief is in [IMPLEMENTATION.md](IMPLEMENTATION.md).
+**2026-11-05** tarihli önceki teslim incelemesi, `Mini_DPP_Teknik_Odev_ESG_Next.pdf`
+dosyasının iki sayfasına ve sağlanan CSV’ye dayanır. Genişletilmiş uygulama kapsamı
+[IMPLEMENTATION.md](IMPLEMENTATION.md) içindedir. Aşağıda önceki doğrulama kanıtı ile
+bu oturumdaki TR/EN çalışmasının sonuçları ayrı belirtilmiştir.
 
-**Result:** no outstanding mandatory-feature or bonus defect was found in the
-reviewed workflows. The safe fixes below address documentation accuracy and a
-reproduced Windows checkout problem. Application source, API contracts, immutable
-history behavior and the Model/Batch/Revision database architecture are unchanged.
+Önceki incelemede zorunlu özellikler veya bonuslar için açık kusur bulunmamıştır.
+Yerelleştirme; React ve HTTP/HTML sunumunu, testleri ve belgeleri günceller. İş
+kuralları, API alanları, değiştirilemez geçmiş ve Model/Batch/Revision mimarisi
+korunur; veritabanı şeması veya migration eklenmez.
 
-## Prioritized findings
+## Önceki incelemenin öncelikli bulguları
 
-| Priority | Finding and evidence | Disposition |
+| Öncelik | Bulgu ve kanıt | Sonuç |
 | --- | --- | --- |
-| P2 | Fresh Windows clone with system `core.autocrlf=true` changes source files to CRLF: `dotnet format` exits 1 with ENDOFLINE errors, and Prettier exits 1 for 20 files. It also changes the sample CSV SHA-256 to `3A3444007F0F32D04D4C25BF4CDF63E298AC21EB27F971F1A2D350DFBC04E1C9`. | Fixed with `.gitattributes`: LF source checkouts, no text conversion for the supplied CSV, binary PDF handling. Recreated clone files now pass both formatters and match the original CSV hash. No source or input file needed editing. |
-| P2 | README, REVIEW, IMPLEMENTATION and COMMITS incorrectly described an uncommitted implementation and unexecuted remote CI. Public `main`, a fresh public clone and GitHub run/job APIs contradict those statements. | Fixed all four documents; recorded actual commit subjects, SHA, CI URL and job outcomes. Replaced the obsolete commit construction plan with observed history. |
-| Owner decision | The assessment PDF is publicly tracked in `07c69fd`. Page 2 expressly allows including the sample CSV; it does not explicitly address public redistribution of the assessment PDF. | Recommendation: keep a private reference copy and obtain ESG Next's agreement before retaining the PDF publicly. This is a publication-permission decision, not an established application defect or legal restriction. The PDF and history remain untouched. |
+| P2 | Windows’ta sistem `core.autocrlf=true` ayarı temiz klonu CRLF yapmış; `dotnet format` ENDOFLINE hatalarıyla, Prettier 20 dosyada başarısız olmuştur. Örnek CSV hash’i `3A3444007F0F32D04D4C25BF4CDF63E298AC21EB27F971F1A2D350DFBC04E1C9` olmuştur. | `.gitattributes` ile kaynakta LF, CSV’de metin dönüşümünü kapatma ve PDF’de ikili dosya davranışı sağlanmıştır. Yeniden oluşturulan klon iki biçim denetimini geçmiş ve özgün CSV hash’ine dönmüştür; uygulama/girdi dosyalarını düzenlemek gerekmemiştir. |
+| P2 | README, REVIEW, IMPLEMENTATION ve COMMITS, uygulamayı commit edilmemiş ve uzak CI’ı çalıştırılmamış olarak anlatmıştır. Herkese açık dal, temiz klon ve GitHub çalışma/iş API’leri bununla çelişmiştir. | Dört belge düzeltilmiş; gerçek başlıklar, SHA, CI bağlantısı ve sonuçlar kaydedilmiştir. Yapay geçmiş oluşturma planı gerçek geçmişle değiştirilmiştir. |
+| Sahip kararı | Değerlendirme PDF’si `07c69fd` içinde herkese açıktır. İkinci sayfa örnek CSV’nin eklenmesine açıkça izin verir; PDF’nin herkese açık yeniden dağıtımını açıkça ele almaz. | Önceki öneri: özel başvuru kopyası tutmak ve PDF’nin herkese açık kalması için ESG Next’in görüşünü almak. Bu bir yayın izni kararıdır; kanıtlanmış uygulama kusuru veya hukuki yasak değildir. PDF ve geçmiş korunmuştur. |
 
-No P0/P1 application finding was established. No speculative features, framework
-changes or refactoring are proposed.
+Önceki incelemede P0/P1 uygulama kusuru saptanmamış; varsayımsal özellik,
+framework değişikliği veya ilgisiz yeniden yapılandırma önerilmemiştir.
 
-## Published Git and CI evidence
+## Yayımlanmış Git ve CI kanıtı
 
-At review start, local HEAD, the fresh public clone and the GitHub `main` branch API all reported
-`b5f86b8a022c3f88b189acac3abfd3fa1d8dd966`. The initial commit is followed by nine
-incremental tooling, domain, persistence, API, test, frontend, documentation and CI
-commits. Their actual subjects are in [COMMITS.md](COMMITS.md).
+Önceki incelemenin başlangıcında yerel HEAD, temiz herkese açık klon ve GitHub `main`
+API’si `b5f86b8a022c3f88b189acac3abfd3fa1d8dd966` bildirmiştir. İlk commit’i;
+araçlar, etki alanı, kalıcılık, API, testler, ön uç, belgeler ve CI için dokuz
+artımlı commit izler. Başlıklar [COMMITS.md](COMMITS.md) içindedir.
 
-[Build and test run #1](https://github.com/GorkemErtas/mini-dpp-platform/actions/runs/41825678774)
-was triggered by a push to `main` on **2026-11-04** at that SHA. Its first attempt
-completed successfully; the **backend**, **frontend** and **browser** jobs and their
-required steps all passed. The run started at 15:01:19 and was complete by 15:02:32
-Türkiye time (12:01:19–12:02:32 UTC).
+[1 numaralı Build and test çalışması](https://github.com/GorkemErtas/mini-dpp-platform/actions/runs/41825678774)
+2026-11-04 tarihinde bu SHA’nın `main` dalına gönderilmesiyle başlamış ve ilk denemede
+başarılı tamamlanmıştır. Önceki kayda göre Türkiye saatiyle 15:01:19’da başlamış,
+15:02:32 itibarıyla bitmiştir; UTC 12:01:19–12:02:32. **backend**, **frontend** ve
+**browser** işleri ile zorunlu adımları başarılıdır. Bu iş sonuçları yerelleştirme
+oturumunda GitHub aracı üzerinden yeniden doğrulanmıştır.
 
-That remote result applies to the reviewed base SHA. This review's documentation
-and `.gitattributes` fixes were verified locally. The owner subsequently authorized
-committing and pushing them; check the corresponding later run on the
-[Actions page](https://github.com/GorkemErtas/mini-dpp-platform/actions).
+Sonraki belge/checkout düzeltmesi `c624a73`, mevcut yerel `git log` çıktısında vardır.
+Yerelleştirme başlangıç HEAD’i `c624a7315c8af246643a52fa0cb033cdd3745a53` değeridir.
+Yukarıdaki uzak CI, bu sonraki commit’i veya yerel yerelleştirmeyi kapsamaz. Sonraki
+uzak çalışmalar [Actions sayfasından](https://github.com/GorkemErtas/mini-dpp-platform/actions)
+incelenebilir; bu oturumda onlar için ayrı bir başarı iddiası kurulmamıştır.
 
-## Requirements compliance
+## Gereksinimlere uyum
 
-| Requirement | Status / implementation evidence |
+| Gereksinim | Durum ve kanıt |
 | --- | --- |
-| CSV upload, UTF-8/BOM, per-row validation, physical line errors | Complete: `CsvImporter`, `UploadEndpoint`; real sample, quoted/multiline, blank-line, malformed-record and encoding integration tests |
-| GS1/GTIN string, required text, exact decimal rules | Complete: framework-free `ProductValidation`; boundary/negative unit tests |
-| Partial success, per-row atomicity, repeat imports | Complete: separate EF transaction per valid row; injected revision failure proves rollback of batch/model and continuation |
-| Related Model and Batch, constraints, migrations | Complete: `DppDbContext`, initial migration, unique model/batch and GTIN indexes; real SQLite integration tests |
-| HTML `/dpp/{gtin}` | Complete: encoded, responsive semantic HTML; unknown GTIN 404 |
-| schema.org Product JSON-LD | Complete: `PassportOutputs.JsonLd`, correct MIME and PropertyValue fields; consistency tests |
-| Decodable QR PNG | Complete: QRCoder PNG; ZXing decodes exact configured URL; spoofed Host test |
-| Consumer/authorized demo carbon filtering | Complete: shared `PassportPresenter`; regression tests for HTML, JSON-LD, list, product, history and single version, both roles |
-| Immutable version history bonus | Complete: full snapshots from v1, UTC times, monotonic versions, no-op suppression, model reassignment and history endpoints/timeline |
-| React + TypeScript bonus | Complete: dashboard search/location filter, upload/retry/errors, detail/role/QR/output links/timeline; real API integration |
-| Accessible responsive UI and states | Complete: labels, focus, skip link, semantic markup, loading/empty/error states, reduced-motion CSS; axe desktop/mobile checks |
-| Security and error handling | Complete for assessment scope: bounded uploads, safe errors, no carbon values in validation messages, escaping, fixed public URLs, configured CORS/hosts, DTOs, cancellation |
-| Reviewer setup/docs | Complete: fresh-clone setup, migrations, examples, assumptions, unchanged inputs and verified commit history |
-| Builds, tests, lint/typecheck and CI | Passed locally and in the verified published GitHub Actions run; checkout fix verified locally |
-| Review and delivery constraints | Review initially left fixes unstaged; the owner subsequently authorized commit/push. No reset, rebase, amend, deployment, PDF removal or history rewrite is included. |
+| CSV yükleme, UTF-8/BOM, bağımsız doğrulama, fiziksel satır hataları | Tamam: `CsvImporter`, `UploadEndpoint`; gerçek örnek, tırnaklı/çok satırlı alan, boş satır, hatalı kayıt ve kodlama testleri |
+| GS1/GTIN metni, zorunlu metin, tam ondalık kuralları | Tamam: framework bağımsız `ProductValidation`; sınır/negatif birim testleri |
+| Kısmi başarı, satır başına atomiklik, tekrar yükleme | Tamam: her geçerli satırda ayrı EF transaction; zorlanan sürüm hatası model/parti geri almasını ve devamı kanıtlar |
+| İlişkili Model/Batch, kısıtlar, migration | Tamam: `DppDbContext`, başlangıç migration dosyası, benzersiz model/parti ve GTIN indeksleri, gerçek SQLite testleri |
+| HTML `/dpp/{gtin}` | Tamam: kaçışlanmış, duyarlı, anlamsal HTML; bilinmeyen GTIN 404; TR/EN sorgu/başlık seçimi |
+| schema.org Product JSON-LD | Tamam: `PassportOutputs.JsonLd`, doğru MIME ve PropertyValue; dil değişince birebir aynı makine verisi |
+| Çözümlenebilir QR PNG | Tamam: QRCoder; ZXing tam yapılandırılmış tüketici URL’sini çözer; sahte Host ve rol hedefi değiştiremez |
+| Tüketici/yetkili karbon süzmesi | Tamam: ortak `PassportPresenter`; HTML, JSON-LD, liste, ürün, geçmiş ve tek sürüm için iki rol; iki dilde regresyonlar |
+| Değiştirilemez sürüm geçmişi bonusu | Tamam: v1’den tam durumlar, UTC, artan sürüm, değişmeyen yüklemeyi atlama, model ilişkilendirme, API ve zaman çizelgesi |
+| React + TypeScript bonusu | Tamam: arama/yer filtresi, yükleme/tekrar/hatalar, ayrıntı/rol/QR/çıktılar/geçmiş, gerçek API |
+| Erişilebilir duyarlı arayüz ve durumlar | Tamam: etiketler, odak, içeriğe geçiş, anlamsal yapı, durumlar, azaltılmış hareket; iki dilde klavye ve axe kontrolleri |
+| Güvenlik ve hata yönetimi | Değerlendirme kapsamında tamam: sınırlı yükleme, güvenli hatalar, hatada karbon değeri yok, HTML kaçışı, sabit genel URL, CORS/sunucu ayarı, DTO, iptal |
+| Kurulum ve belgeler | Tamam: temiz klon kurulumu, migration, örnekler, varsayımlar, özgün girdiler ve doğrulanmış commit geçmişi; dört belge Türkçe |
+| TR/EN yerelleştirme | Tamam: Türkçe varsayılanı, anlık/kalıcı seçim, dil başlığı, doğrudan HTML, yerel tarih/sayı sunumu ve ortak hata sözlüğü |
+| Derleme, test, biçim, lint ve CI | Yerel sonuçlar aşağıdadır; yayımlanmış eski CI kanıtı yalnızca kendi SHA’sı için geçerlidir |
+| İnceleme/teslim kısıtları | İlk istekte staging/commit/push yapılmadı; sonraki açık kullanıcı talebi ayrı commit ve push işlemlerini yetkilendirdi. Reset, rebase, merge, dağıtım, PDF kaldırma veya geçmiş yeniden yazımı yapılmaz |
 
-## Executed verification
+## Önceki temiz klon doğrulamasının kaydı
 
-Reverified on Windows on **2026-11-05** with workspace **.NET SDK 10.0.403 / runtime 10.0.14**, Node
-**26.13.0**, and npm **11.20.0**. CI targets .NET 10 and Node 24 on Ubuntu.
+Önceki inceleme 2026-11-05 tarihinde Windows, çalışma alanı **.NET SDK 10.0.403 /
+çalışma zamanı 10.0.14**, **Node 26.13.0**, **npm 11.20.0** ile yapılmıştır. CI,
+Ubuntu üzerinde .NET 10 ve Node 24 hedefler.
 
-A real clone of `https://github.com/GorkemErtas/mini-dpp-platform.git` was created
-under ignored `.tools/submission-review`, without copied dependencies, build output
-or databases. The workspace SDK helper supplied the already installed .NET 10 SDK;
-the clone restored its own locked dependencies. The documented development launch
-profile created and migrated a new SQLite database in the clone's API directory.
-The current workspace's demo database was not used.
+`https://github.com/GorkemErtas/mini-dpp-platform.git` için yok sayılan
+`.tools/submission-review` altında gerçek klon oluşturulmuştur; bağımlılık,
+derleme çıktısı veya veritabanı kopyalanmamıştır. Yerel SDK yardımcısı kurulu .NET
+10’u sağlamış; klon kendi kilitli bağımlılıklarını geri yüklemiştir. Belgelenen
+başlatma profili klonun API dizininde yeni SQLite dosyasını oluşturup migration
+uygulamıştır. Ana çalışma alanının demo veritabanı kullanılmamıştır.
 
-After reproducing the Windows failure, `.gitattributes` was copied into the isolated
-clone and its tracked text files were recreated from its existing index with
-`core.autocrlf=true`. Git reported LF working files, and both formatting checks
-passed. This tested the proposed checkout behavior before creating a delivery
-commit; the reviewed base SHA contains the pre-fix state.
+Windows hatası yeniden üretildikten sonra `.gitattributes` klona kopyalanmış;
+izlenen metinler mevcut indekslerinden `core.autocrlf=true` ile yeniden
+oluşturulmuştur. Git LF bildirmiş; iki biçim denetimi geçmiştir. Böylece teslim
+commit’i öncesinde önerilen checkout davranışı sınanmıştır; incelenen taban SHA
+henüz bu düzeltmeyi içermemektedir.
 
-- Backend: **62 passing xUnit cases**, using real migrated SQLite databases.
-- Frontend: **11 passing Vitest cases** across workflow/API tests.
-- Chromium: **1 passing end-to-end workflow**, including CSV import, the exact two
-  rejected rows, dashboard, role changes, history, HTML/JSON-LD/PNG HTTP responses,
-  and a mobile overflow check.
-- axe: **zero WCAG A/AA violations** on the tested import, dashboard, desktop detail
-  and mobile detail states. Automated scans complement, rather than replace, manual
-  accessibility evaluation.
-- Actual local sample API import: total **5**, imported **3**, failed **2**, updated
-  **0**, unchanged **0**. Reimports: unchanged **3**, failed **2**.
-- A changed single-row import returned **1 updated** and produced versions **[2, 1]**.
-  Carbon changed from **12.4** to **14.25**; version 1, including its timestamp,
-  remained identical. Reimporting **14.250** returned **1 unchanged**, with two
-  snapshots still present. Real Chromium checks displayed both timeline entries.
-- After server shutdown, read-only SQLite inspection confirmed **3 models,
-  3 batches and 4 revisions**, GTIN storage type **text**, the applied migration,
-  `PRAGMA integrity_check = ok` and no `foreign_key_check` violations.
-- Consumer and `rol=yetkili` HTTP checks passed for list, detail, history, single
-  snapshot, HTML and JSON-LD; carbon was omitted or present consistently. Read
-  responses returned `Cache-Control: no-store`.
-- QR tests decoded the exact configured consumer URL despite spoofed Host/role.
-  Direct checks confirmed PNG bytes and the default `http://localhost:5173/dpp/{gtin}`
-  public URL. Chromium loaded the HTML page's QR image successfully.
-- Swagger JSON exposed multipart upload and history schemas. The actual Swagger
-  UI rendered through the Vite proxy; updated React detail, role switches and
-  output links passed with no browser console or page errors.
-- Desktop and mobile screenshots were inspected. The supplied CSV bytes were not
-  edited; its SHA-256 after the checkout fix is
-  `A3C4189EA0EDB327A0E2EB67B6FEEBE0DF0370A96162B476C91285B458E7A107`.
-  The PDF remains unchanged at
-  `0CEEF3AC96F49AA7A1A5E23FBFFD78B0E571AEBC98AD288A3D36F440C6FCAC81`.
+Önceki kaydın sonuçları:
 
-Final command results (all executed successfully in the clone; initial checkout
-failures and their fix are recorded above):
+- **62 xUnit**, **11 Vitest** ve **1 Chromium uçtan uca akışı** başarılıdır.
+  Akış; CSV, iki hatalı satır, pano, roller, geçmiş, HTML/JSON-LD/PNG ve mobil
+  taşmayı kapsar.
+- İçe aktarma, pano, masaüstü ayrıntı ve mobil ayrıntıda axe **sıfır WCAG A/AA
+  ihlali** bildirmiştir. Otomatik tarama elle erişilebilirlik değerlendirmesini tamamlar.
+- Gerçek ilk örnek yükleme: **5 toplam, 3 içe aktarılan, 2 reddedilen, 0 güncellenen,
+  0 değişmeyen**. Tekrarda **3 değişmeyen, 2 reddedilen**.
+- Değişen tek satır **1 güncellenen**, geçmiş **[2, 1]** üretmiştir. Karbon **12.4**
+  yerine **14.25** olmuştur; sürüm 1 ve zamanı birebir korunmuştur. **14.250** tekrar
+  yüklemesi **1 değişmeyen** ve hâlâ iki sürüm vermiştir. Chromium iki girdiyi göstermiştir.
+- Sunucular kapatıldıktan sonra salt okunur SQLite incelemesi: **3 model, 3 parti,
+  4 sürüm**, GTIN türü **text**, uygulanmış migration, `PRAGMA integrity_check = ok`
+  ve `foreign_key_check` ihlali yok.
+- Tüketici ve `rol=yetkili` HTTP denetimleri liste, ayrıntı, geçmiş, tek sürüm, HTML
+  ve JSON-LD’de karbonun tutarlı çıkarıldığını/eklendiğini göstermiştir. Okumalar
+  `Cache-Control: no-store` döndürmüştür.
+- QR, sahte Host/role rağmen tam yapılandırılmış tüketici URL’sine çözülmüştür.
+  PNG baytları, varsayılan `http://localhost:5173/dpp/{gtin}` URL’si ve HTML QR
+  görselinin Chromium’da yüklenmesi doğrulanmıştır.
+- Swagger JSON multipart/geçmiş şemalarını açıklamış; gerçek Swagger UI Vite vekili
+  üzerinden açılmıştır. React ayrıntı, rol/çıktı bağlantıları tarayıcı konsol veya
+  sayfa hatası olmadan çalışmıştır.
+- Masaüstü/mobil ekran görüntüleri incelenmiştir. Özgün CSV/PDF baytları korunmuştur.
 
-| Check | Result |
+Önceki klonda gerçekten çalıştırılan ek komutlar ve sonuçları:
+
+| Komut | Önceki inceleme sonucu |
 | --- | --- |
-| `dotnet restore backend/MiniDpp.sln --locked-mode` | Passed with checked-in dependency locks |
-| `dotnet build backend/MiniDpp.sln --no-restore --configuration Release` | Passed, zero warnings/errors |
-| `dotnet test backend/MiniDpp.sln --no-build --configuration Release` | 62 passed, zero failures/skips |
-| `dotnet format backend/MiniDpp.sln --no-restore --verify-no-changes` | Passed after checkout fix; initially failed on CRLF |
-| `dotnet tool restore` | Restored checked-in EF tool 10.0.14 |
-| `dotnet ef migrations has-pending-model-changes --project backend/src/MiniDpp.Infrastructure --startup-project backend/src/MiniDpp.Api --configuration Release --no-build` | No pending changes |
-| `dotnet list backend/MiniDpp.sln package --vulnerable --include-transitive` | No known vulnerable packages in any project |
-| `npm ci` | Clean dependency installation, zero reported vulnerabilities |
-| `npm run typecheck` / `npm run lint` / `npm run format:check` | All passed; format initially failed on CRLF, then passed after checkout fix |
-| `npm test` | 11 passed |
-| `npm run build` | Passed; Vite production assets generated |
-| `npx playwright install chromium` / `npm run test:e2e` | Passed with `CI=true`, automatic server startup and a fresh isolated database; 1 workflow, zero tested axe violations |
-| Direct HTTP + Chromium smoke script (temporary review tooling) | Passed against a second empty clone database: exact sample/repeat reports, changed/equivalent imports, immutable v1, visibility, QR image, updated timeline and rendered Swagger UI |
+| `dotnet restore backend/MiniDpp.sln --locked-mode` | Kilitli bağımlılıklarla başarılı |
+| `dotnet build backend/MiniDpp.sln --no-restore --configuration Release` | Sıfır uyarı/hata |
+| `dotnet test backend/MiniDpp.sln --no-build --configuration Release` | 62 başarılı; başarısız/atlanan yok |
+| `dotnet format backend/MiniDpp.sln --no-restore --verify-no-changes` | Checkout düzeltmesinden sonra başarılı; önce CRLF nedeniyle başarısız |
+| `dotnet tool restore` | Depodaki EF aracı 10.0.14 geri yüklendi |
+| `dotnet ef migrations has-pending-model-changes --project backend/src/MiniDpp.Infrastructure --startup-project backend/src/MiniDpp.Api --configuration Release --no-build` | Bekleyen model değişikliği yok |
+| `dotnet list backend/MiniDpp.sln package --vulnerable --include-transitive` | O tarihte bilinen savunmasız paket bildirilmedi |
+| `npm ci` | Temiz kurulum; bildirilen güvenlik açığı yok |
+| `npm run typecheck` / `npm run lint` / `npm run format:check` | Başarılı; biçim denetimi önce CRLF nedeniyle başarısız, düzeltmeden sonra başarılı |
+| `npm test` / `npm run build` | 11 test ve üretim derlemesi başarılı |
+| `npx playwright install chromium` / `npm run test:e2e` | `CI=true`, otomatik sunucular ve boş yalıtılmış veritabanıyla 1 akış başarılı |
+| Geçici HTTP + Chromium doğrulama betiği | İkinci boş klon veritabanında örnek/tekrar/değişiklik/eşdeğer yüklemeler, değişmeyen v1, görünürlük, QR, geçmiş ve Swagger başarılı |
 
-Frontend commands run from `frontend/`; backend commands run from the root.
-Restricted execution initially blocked Git child processes and a .NET restore;
-those operations and subsequent executable checks used the approved execution
-permissions. No verification command remains blocked. Temporary review scripts,
-clone, logs, screenshots and databases live under ignored `.tools/`. All
-review-started development servers were stopped after verification.
+Ön uç komutları `frontend/`, arka uç komutları kökten çalışmıştır. Kısıtlı ortam,
+başta Git alt süreçlerini ve .NET geri yüklemeyi engellemiş; gerekli işlemler
+onaylı yürütmeyle tamamlanmıştır. Önceki geçici betikler, klon, günlükler,
+görüntüler ve veritabanları yok sayılan `.tools/` altındadır. İncelemenin başlattığı
+sunucular doğrulama sonunda durdurulmuştur. Bunlar tarihsel kayıttır; yukarıdaki ek
+migration/savunmasız paket komutları bu yerelleştirmede yeniden çalıştırılmış sayılmaz.
 
-## Repository contents
+## Bu oturumun yerelleştirme davranışı
 
-The repository initially contained only a one-line README. It now contains:
+React’in `frontend/src/i18n/{en,tr}.ts` sözlükleri ve `useSyncExternalStore` tabanlı
+dil durumu ek bağımlılık gerektirmez. İlk ziyarette Türkçe seçilir. Üst gezinmedeki
+TR/EN düğmeleri anında metinleri, `html lang`, başlık/açıklama ve erişilebilirlik
+etiketlerini değiştirir. `localStorage` seçimi yenileme/gezinmede korur; kapalı
+saklama durumunda dil değiştirme çalışmaya devam eder. Sekmeler arası saklama
+olayları da izlenir. Klavye odağı dil düğmesinde kalır; rol anahtarı değişiminde
+önceki karbon verisini atma davranışı korunur.
 
-- **Backend:** solution and five projects, domain entities/validation, application
-  contracts/presenter, importer/reader/EF context, generated migration and snapshot,
-  API/output/error handling and configuration, dependency lock files, and xUnit tests.
-- **Frontend:** package/lock and tooling configuration; typed API client, route shell,
-  product/import/detail pages, reusable UI, responsive CSS, favicon, unit/workflow
-  tests, and browser/accessibility tests with Playwright configuration.
-- **Review/DX:** expanded README, source PDF, original sample CSV, implementation
-  checklist, this verification record, actual commit history, workspace SDK helper,
-  GitHub Actions workflow, SDK/tool manifests, editor and checkout configuration,
-  and ignore rules.
+Tüm fetch istekleri `Accept-Language` taşır. API, doğrulama raporunu ve Problem
+Details metinlerini HTTP sınırında yerelleştirir. Ortak `localization/server-messages.json`
+API derlemesine gömülür, React tarafından da kullanılır. Saklanan yükleme sonuçları
+dil değişince tekrar gönderim olmadan çevrilir. İç kimlikler, günlükler ve hata
+alan adları değişmez. Bilinmeyen iç hata metni güvenli genel iletiye düşer.
 
-Ignored build output, test diagnostics, local databases and workspace-only tools
-are intentionally excluded from version control.
+HTML’de geçerli `lang=tr|en`, `/dpp` yollarında başlıktan önceliklidir; aksi durumda
+`Accept-Language`, sonra Türkçe uygulanır. React bağlantısı dili taşır; HTML’nin
+dil bağlantıları demo rolünü korur. Doğrudan gezinme her iki dilde çalışır. Tarihler
+UTC olarak, sayılar Türkçe/İngilizce kültürle sunulur. JSON/JSON-LD sayıları ve
+kimlikleri aynı kalır. QR URL’si dil/rol eklemeden tüketici hedefine yönelir.
 
-## Review entry points
+`README.md`, bu belge, `IMPLEMENTATION.md` ve `COMMITS.md` Türkçedir. Komutlar,
+API yolları, kod/JSON alanları, URL’ler, SHA’lar ve özgün commit başlıkları korunur.
+Önceki inceleme onayları yalnızca tarihsel bağlamdır. Yerelleştirme önce commit
+edilmeden bırakılmış; sonraki açık kullanıcı talebi commit ve push için yetki vermiştir.
 
-1. `ProductValidation.cs`: explain GS1 weights and decimal validation.
-2. `CsvImporter.cs`: parse the file, validate independently, transact each valid row.
-3. `DppDbContext.cs` and migration: explain batch ownership and uniqueness.
-4. `PassportPresenter` and `PassportOutputs.cs`: trace carbon filtering into all outputs.
-5. `WorkflowTests.cs`: inspect the snapshot-failure rollback and visibility tests.
-6. `DetailPage.tsx`: role switches discard old data, retain control focus and refetch.
+## Bu oturumda çalıştırılan kontroller — 2026-11-05
 
-## Known limitations and remaining work
+Ortam: Windows, **.NET SDK 10.0.403**, **Node 26.13.0**, **npm 11.20.0**. Testler
+çalışma ağacındaki yerelleştirmeyi denetler. Arka uç testleri ayrı gerçek SQLite
+veritabanları, Playwright `CI=true` ile otomatik sunucular ve geçici veritabanı kullanır.
 
-No outstanding mandatory or bonus defect was found in the checks above. Real
-authorization, cloud deployment and Docker are outside the assessment. The app uses
-local development serving and a small unpaginated catalogue; see README for
-malformed-quote, concurrency and production-hosting trade-offs.
+| Komut | Gerçek sonuç |
+| --- | --- |
+| `dotnet restore backend/MiniDpp.sln --locked-mode` | Başarılı; kısıtlı yürütmenin ilk denemesi başarısız, onaylı yürütmede tamamlandı |
+| `dotnet build backend/MiniDpp.sln --no-restore --configuration Release` | Başarılı; sıfır uyarı/hata |
+| `dotnet test backend/MiniDpp.sln --no-build --configuration Release` | 83 başarılı; mevcut 62 ve 21 yerelleştirme durumu |
+| `dotnet format backend/MiniDpp.sln --no-restore --verify-no-changes` | Başarılı; değişiklik gerekmiyor |
+| `npm ci --cache ../.tools/npm-cache` | Başarılı; 269 paket, bildirilen güvenlik açığı yok; ilk kısıtlı deneme `spawn EPERM`, onaylı yürütmede tamamlandı |
+| `npm run typecheck` | Başarılı |
+| `npm run lint` | Başarılı |
+| `npm run format:check` | Başarılı |
+| `npm test` | 19 başarılı; mevcut 11 ve 8 yerelleştirme testi |
+| `npm run build` | Başarılı; TypeScript ve Vite üretim çıktısı |
+| `npm run test:e2e` | 2 başarılı; mevcut işlev akışı ve yeni yerelleştirme akışı |
 
-After reviewing these findings, the owner authorized committing and pushing the
-fixes. A subsequent GitHub Actions run establishes remote CI evidence for that
-delivery commit; the run linked above remains evidence for the reviewed base SHA.
+İlk ön uç kontrolü bir test seçeneği tip hatası, yakalanan hatanın nedenini koruma
+lint kuralı ve Node 26/jsdom `localStorage` çakışması bulmuştur. Düzeltilmiştir.
+Türkçe hazırlık yönergesiyle aynı metni taşıyan doğrulama hatası için test seçicisi
+hata tablosuna daraltılmış; işlevsel iddia korunmuştur. Sonraki kontroller yukarıdaki
+başarılı sonuçları vermiştir. Biçimlendiriciler uygulanmıştır; başarılı son denetimler
+ilk hataları gizlemek için kullanılmamıştır.
 
-The PDF decision remains open. Removing a file in a later commit would leave it in
-the existing public history. This review makes no removal or history rewrite; any
-such action requires the owner's explicit approval. The source PDF's permission
-question does not alter the verified application feature results.
+Yeni testler; Türkçe varsayılanı, TR → EN → TR, saklama engeli, sekmeler, yenileme,
+gezinme, API dil başlığı, yeniden yüklemeden rapor çevirisi, yer tutucu tamlığı,
+yerel tarih/sayı, başlık ağırlıkları, güvenli 400/404/415/500 hataları ve doğrudan
+HTML’i kapsar. İki dilde tüm veri okuma yüzeylerinin birebir eşitliği ve QR baytları
+karşılaştırılmıştır. Aynı CSV’nin diğer dilde tekrar yüklenmesi sürüm üretmez.
+
+Playwright, iki dilde **1280, 390 ve 320 piksel** ayrıntı görünümlerinde yatay taşma
+olmadığını ve taranan axe WCAG A/AA kurallarında **sıfır ihlal** olduğunu doğrular.
+Özgün akış ayrıca içe aktarma, pano ve masaüstü/mobil ayrıntıyı tarar. Otomatik
+tarama, elle erişilebilirlik incelemesinin tamamı değildir.
+
+Özgün girdilerin bu oturumda yeniden hesaplanan SHA-256 değerleri değişmemiştir:
+
+- CSV: `A3C4189EA0EDB327A0E2EB67B6FEEBE0DF0370A96162B476C91285B458E7A107`
+- PDF: `0CEEF3AC96F49AA7A1A5E23FBFFD78B0E571AEBC98AD288A3D36F440C6FCAC81`
+
+Uygulama doğrulaması sonunda `git diff --check` başarılıydı ve HEAD başlangıç
+SHA’sıyla aynıydı. Kullanıcının sonraki commit/push talebi üzerine backend ve
+testleri `3a2fa4e`, frontend ve testleri `2eeddc1` olarak ayrı kaydedilmiştir.
+Türkçe belgeler üçüncü ayrı commit’tir; önceki geçmiş yeniden yazılmaz.
+Playwright’ın başlattığı 5080/5173 dinleyicileri testlerden sonra kapalıdır.
+Türkçe masaüstü/mobil ekran görüntüleri gözle incelenmiş; mobilde gizlenen satır
+sonları arasındaki eksik boşluklar düzeltilip bütün ön uç kontrolleri ve iki
+tarayıcı akışı yeniden başarıyla çalıştırılmıştır. Görüntüler yok sayılan
+`.tools/screenshots/detail-{tr,en}-{1280,390}.png` dosyalarındadır.
+
+## Değişen dosyalar
+
+Toplam **31 dosya**; yeni kaynaklar dâhil, başlangıçta staging yapılmadan
+incelemeye bırakılmış, sonraki kullanıcı talebiyle üç mantıksal commit’e ayrılmıştır:
+
+```text
+README.md
+docs/REVIEW.md
+docs/IMPLEMENTATION.md
+docs/COMMITS.md
+backend/src/MiniDpp.Api/MiniDpp.Api.csproj
+backend/src/MiniDpp.Api/Localization.cs
+backend/src/MiniDpp.Api/PassportOutputs.cs
+backend/src/MiniDpp.Api/Program.cs
+backend/src/MiniDpp.Api/UploadEndpoint.cs
+backend/tests/MiniDpp.Tests/LocalizationTests.cs
+backend/tests/MiniDpp.Tests/WorkflowTests.cs
+frontend/index.html
+frontend/src/App.tsx
+frontend/src/DetailPage.tsx
+frontend/src/ImportPage.tsx
+frontend/src/ProductsPage.tsx
+frontend/src/LanguageSwitcher.tsx
+frontend/src/api.ts
+frontend/src/components.tsx
+frontend/src/format.ts
+frontend/src/styles.css
+frontend/src/i18n/index.ts
+frontend/src/i18n/en.ts
+frontend/src/i18n/tr.ts
+frontend/tests/api.test.ts
+frontend/tests/localization.test.tsx
+frontend/tests/setup.ts
+frontend/tests/workflows.test.tsx
+frontend/tests/e2e/localization.spec.ts
+frontend/tests/e2e/passports.spec.ts
+localization/server-messages.json
+```
+
+## Depo içeriği ve inceleme başlangıç noktaları
+
+Başlangıç deposu tek satırlık README içeriyordu. Uygulama deposu artık şunları içerir:
+
+- Arka uç: çözüm ve beş proje; varlıklar/doğrulama, sözleşmeler/sunum bileşeni, içe
+  aktarma/okuma/EF context, üretilmiş migration, HTTP/çıktı/hata/yapılandırma,
+  bağımlılık kilitleri ve xUnit testleri.
+- Ön uç: paket/kilit ve araç ayarları; tipli API, gezinme, ürün/yükleme/ayrıntı,
+  ortak bileşenler, duyarlı CSS, favicon, birim/akış ve tarayıcı/erişilebilirlik testleri.
+- İnceleme/geliştirici deneyimi: README, özgün PDF/CSV, uygulama listesi, doğrulama
+  kaydı, gerçek commit geçmişi, SDK yardımcısı, GitHub Actions, SDK/araç bildirimleri,
+  düzenleyici/checkout/yok sayma ayarları. Yerelleştirme ortak sözlükleri de eklenmiştir.
+
+Derleme çıktıları, test tanıları, yerel veritabanları ve çalışma alanına özgü araçlar
+Git tarafından yok sayılır.
+
+1. `ProductValidation.cs`: GS1 ağırlıkları ve ondalık doğrulaması.
+2. `CsvImporter.cs`: dosya ayrıştırma, bağımsız doğrulama, satır transaction işlemi.
+3. `DppDbContext.cs` ve migration: parti sahipliği ve benzersizlik.
+4. `PassportPresenter` / `PassportOutputs.cs`: tüm çıktılarda karbon süzmesi.
+5. `WorkflowTests.cs`: sürüm yazma hatası geri alma ve görünürlük regresyonları.
+6. `DetailPage.tsx`: rol değişince eski veriyi atma, odağı koruma, yeniden getirme.
+7. `Localization.cs`, `i18n/` ve `LocalizationTests.cs`: sunumda dil ve sözlükler.
+
+## Sınırlamalar ve kalan metinler
+
+Denetlenen akışlarda açık zorunlu özellik veya bonus kusuru bulunmamıştır. Gerçek
+yetkilendirme, bulut dağıtımı ve Docker değerlendirme kapsamı dışındadır. Yerel
+sunucular ve küçük, sayfalanmamış katalog kullanılır; hatalı tırnak, eş zamanlılık
+ve üretim sunumu tercihleri README’de açıklanır.
+
+Uygulamanın kullanıcıya yönelik sabit React/HTML ve doğrulama/hata metinlerinde
+bilinen çeviri eksiği yoktur. Özgün model/parti/yer verisi, `GTIN`, `kg CO2e`, API/CSV
+alanları, JSON-LD property adları ve Swagger/OpenAPI’nin teknik geliştirici
+metinleri bilinçli olarak korunur. Dosya seçicisinin işletim sistemine ait metinleri
+tarayıcı/işletim sistemi dilini kullanır. Commit başlıkları da istendiği gibi özgündür.
+
+Önceki incelemede PDF kararı açık kalmıştır. Sonraki bir commit ile kaldırılması
+eski herkese açık geçmişten silmez. Bu oturum kaldırma veya geçmiş yeniden yazımı
+yapmaz; bu tarihsel yayın notu doğrulanmış uygulama sonuçlarını değiştirmez.
